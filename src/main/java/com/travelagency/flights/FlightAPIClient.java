@@ -29,7 +29,7 @@ public class FlightAPIClient {
         String currency
     ) {
         String url = String.format(
-            "https://api.flightapi.io/roundtrip/%s/%s/%s/%s/%s/%s/%s/%s/%s/%s/%s",
+            "https://api.flightapi.io/roundtrip/%s/%s/%s/%s/%s/%s/%s/%s/%s/%s",
             apiKey, departure, arrival, depDate, retDate,
             adults, children, infants, cabin, currency
         );
