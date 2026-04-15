@@ -1,4 +1,4 @@
-const API = "http://localhost:80";
+//const API = "http://localhost:80";
 
 
 
@@ -270,7 +270,7 @@ async function searchHotels() {
     console.log("sending request", requestBody);
 
     try {
-        const response = await fetch("https://student.csc.liv.ac.uk/api/accommodation/search", {
+        const response = await fetch("/api/accommodation/search", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -492,7 +492,7 @@ async function searchFlights(event) {
     };
 
     try {
-        const response = await fetch("https://student.csc.liv.ac.uk/api/flights", {
+        const response = await fetch("/api/flights", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(flightData)
