@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link rel="stylesheet" href="project.css">
+        <link rel="icon" href="data:," />
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Account Page</title>
+    </head>
+    <body>
+        <h1>Travel Agency Booking and Comparison System</h1>
+        <nav class="navbar">
+            <div class="nav-links-desktop">
+                <a href="index.html">Home</a>
+                <a href="flights.html">Flights</a>
+                <a href="accoms.html">Accommodation</a>
+                <a href="booking_page.html">Compare Bookings</a>
+                <a href="payment.html">Payment</a>
+                <a href="account.html" class="active">Account</a>
+            </div>
+            
+            <div class="menu-toggle" id="menu-toggle">☰</div>
+            <div class="nav-links-mobile" id="nav-links-mobile">
+                <a href="index.html">Home</a>
+                <a href="flights.html">Flights</a>
+                <a href="accoms.html">Accommodation</a>
+                <a href="booking_page.html">Compare Bookings</a>
+                <a href="payment.html">Payment</a>
+                <a href="account.html" class="active">Account</a>
+            </div>
+        </nav>
+
+        
+        <h2>Account Login</h2>
+        <div class="login-container">
+            <button class="account-button" id="login" onclick="showLogin()">Login</button>
+            <button class="account-button" id="create" onclick="showCreate()">Create Account</button>
+            <br>
+            <br>
+            <form class="account-form" id="login-form">
+                <label>Email</label>
+                <input type="text" placeholder="Enter Email" required>
+                <br>
+                <br>
+                <label>Password</label>
+                <input type="password" placeholder="Enter Password" required>
+                <br><br>
+                <button type="submit">Login</button>
+            </form>
+            <form class="account-form" id="create-form" style="display:none;">
+                <label>Full Name</label>
+                <input type="text" placeholder="Enter full name" required>
+                <br><br>
+                <label>Email</label>
+                <input type="text" placeholder="Enter Email" required>
+                <br><br>
+                <label>Password</label>
+                <input type="password" placeholder="Enter Password" required>
+                <br><br>
+                <label>Confirm Password</label>
+                <input type="password" placeholder="Confirm password" required>
+                <br><br>
+                <label>Phone Number</label>
+                <input type="text" placeholder="Enter phone number">
+                <br><br>
+                <button type="submit">Create Account</button>
+            </form>
+        </div>
+        <script src="project.js"></script>
+    </body>
+</html>

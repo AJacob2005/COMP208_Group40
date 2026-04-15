@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link rel="stylesheet" href="project.css">
+        <link rel="icon" href="data:," />
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Payment Page</title>
+    </head>
+    <body>
+        <h1>Travel Agency Booking and Comparison System</h1>
+        <nav class="navbar">
+            <div class="nav-links-desktop">
+                <a href="index.html">Home</a>
+                <a href="flights.html">Flights</a>
+                <a href="accoms.html">Accommodation</a>
+                <a href="booking_page.html">Compare Bookings</a>
+                <a href="payment.html" class="active">Payment</a>
+                <a href="account.html">Account</a>
+            </div>
+            
+            <div class="menu-toggle" id="menu-toggle">☰</div>
+            <div class="nav-links-mobile" id="nav-links-mobile">
+                <a href="index.html">Home</a>
+                <a href="flights.html">Flights</a>
+                <a href="accoms.html">Accommodation</a>
+                <a href="booking_page.html">Compare Bookings</a>
+                <a href="payment.html" class="active">Payment</a>
+                <a href="account.html">Account</a>
+            </div>
+        </nav>
+        <div class="transaction_summary">
+            <h2>Booking Summary</h2>
+            <p id="summary">Total: x</p>
+        </div>
+
+        <div id="paymentStatus"></div>
+
+        <form class="payment_process" id="paymentForm">
+            <h2>Payment Details</h2>
+
+            <div class="form-group">
+                <label>Payment Method:</label><br>
+                <label>
+                    <input type="radio" name="paymentMethod" value="card" id="card">
+                    Credit / Debit Card
+                </label>
+                <br>
+                <label>
+                    <input type="radio" name="paymentMethod" value="paypal" id="paypal">
+                    PayPal
+                </label>
+                <br>
+                <label>
+                    <input type="radio" name="paymentMethod" value="bank" id="bankTransfer">
+                    Bank Transfer
+                </label>
+            </div>
+
+            <div id="cardDetails" class="cardDetails">
+                <h3>Card Information</h3>
+                <div>
+                    <div>
+                        <label>Cardholder Name</label>
+                        <input type="text" name="cardName" placeholder="Enter Name">
+                    </div>
+                </div>
+                <div>
+                    <div>
+                        <label>Card Number</label>
+                        <input type="text" name="cardNumber" placeholder="1234567890123456" maxlength="16">
+                    </div>
+                </div>
+                <div>
+                    <div>
+                        <label>Expiry Date</label>
+                        <input type="month" name="expiryDate">
+                    </div>
+                    <div>
+                        <label>CVV</label>
+                        <input type="text" name="cvv" placeholder="123" maxlength="4">
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" id="payButton">Process Payment</button>
+        </form>
+
+        <div id="receiptSpace" style="display:none;">
+            <h2>Payment Receipt</h2>
+            <div id="receiptContent"></div>
+            <button id="downloadReceipt">Download Receipt</button>
+        </div>
+        <br><br>
+        <a href="home_page.html">
+            <button>Home</button>
+        </a>
+        <script src="project.js"></script>
+    </body>
+</html>

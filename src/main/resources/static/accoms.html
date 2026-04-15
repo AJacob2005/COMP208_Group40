@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link rel="stylesheet" href="project.css">
+        <link rel="icon" href="data:," />
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Accomodation Booking</title>
+    </head>
+    <body>
+        <h1>Travel Agency Booking and Comparison System</h1>
+        <nav class="navbar">
+            <div class="nav-links-desktop">
+                <a href="index.html">Home</a>
+                <a href="flights.html">Flights</a>
+                <a href="accoms.html" class="active">Accommodation</a>
+                <a href="booking_page.html">Compare Bookings</a>
+                <a href="payment.html">Payment</a>
+                <a href="account.html">Account</a>
+            </div>
+            
+            <div class="menu-toggle" id="menu-toggle">☰</div>
+            <div class="nav-links-mobile" id="nav-links-mobile">
+                <a href="index.html">Home</a>
+                <a href="flights.html">Flights</a>
+                <a href="accoms.html" class="active">Accommodation</a>
+                <a href="booking_page.html">Compare Bookings</a>
+                <a href="payment.html">Payment</a>
+                <a href="account.html">Account</a>
+            </div>
+        </nav>
+        <h2>Accomodation Booking</h2>
+        <div class="content">
+            <form class="entry_form" onsubmit="searchHotels(); return false;">
+                <input type="text" id="location"placeholder="Travelling To:" required>
+                <div class="entry-form-row">
+                    <label> Check-in Date: <input type="date" id="checkIn" required> </label>
+                    <label> Check-out Date: <input type="date" id="checkOut" required> </label>
+                </div>
+
+                <div class="entry-form-row">
+                    <label>Travellers
+                        <select id="adults" required>
+                            <option value="" disabled selected>Select Travellers</option>
+                            <option value="1">1 Travellers</option>
+                            <option value="2">2 Travellers</option>
+                            <option value="3">3 Travellers</option>
+                            <option value="4">4 Travellers</option>
+                            <option value="5">5 Travellers</option>
+                            <option value="6">6 Travellers</option>
+                            <option value="7">7 Travellers</option>
+                            <option value="8">8 Travellers</option>
+                            <option value="9">9 Travellers</option>
+                            <option value="10">10 Travellers</option>
+                        </select>
+                    </label>
+                    <label>Stars
+                        <select id="minRating" required>
+                            <option value="1" default selected>1 Star</option>
+                            <option value="2" default selected>2 Star</option>
+                            <option value="3" default selected>3 Star</option>
+                            <option value="4" default selected>4 Star</option>
+                            <option value="5" default selected>5 Star</option>
+                        </select>
+                    </label>
+                    <label>Currency
+                        <select id="currency">
+                            <option value="GBP">GBP</option>
+                            <option value="USD">USD</option>
+                            <option value="EUR">EUR</option>
+                        </select>
+                    </label>
+                </div>
+
+                <button type="submit">Search Accomodation</button>
+            </form>
+        </div>
+
+        <div id="results"></div>
+
+        <br><br>
+        <a href="home_page.html">
+            <button>Home</button>
+        </a>
+        <script src="project.js"></script>
+    </body>
+</html>
