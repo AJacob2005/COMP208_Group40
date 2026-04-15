@@ -13,7 +13,7 @@ public class FlightUpdater {
             ProcessBuilder pb = new ProcessBuilder(
                 "python3",
                 "-u",
-                "src/main/java/com/travelagency/flights/flight_search.py",
+                "flight_search.py",
                 departure, arrival, departDate, returnDate, adults, children, infants, cabin, currency 
             );
             pb.redirectErrorStream(true);
