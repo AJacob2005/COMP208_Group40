@@ -1,0 +1,5 @@
+[phases.setup]
+nixPkgs = ["jdk21", "python3", "python312Packages.requests"]
+
+[start]
+cmd = "java -jar target/travelagency-0.0.1-SNAPSHOT.jar"
