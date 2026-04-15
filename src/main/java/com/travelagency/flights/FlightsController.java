@@ -17,8 +17,20 @@ public class FlightsController {
         String adults      = data.getOrDefault("adults", "1");
         String children    = data.getOrDefault("children", "0");
         String infants     = data.getOrDefault("infants", "0");
-        String cabin       = data.getOrDefault("cabin", "Economy");
+        String cabin       = data.getOrDefault("cabin", "Economy").replace(" ", "_");
         String currency    = data.getOrDefault("currency", "GBP");
+
+        // Clear stale rows for this route/dates before fetching fresh data
+        try (Connection conn = DriverManager.getConnection("jdbc:sqlite:flights.db");
+             PreparedStatement del = conn.prepareStatement(
+                "DELETE FROM flights WHERE origin = ? AND destination = ? " +
+                "AND substr(outbound_departure,1,10) = ? AND substr(return_departure,1,10) = ?")) {
+            del.setString(1, origin);
+            del.setString(2, destination);
+            del.setString(3, depDate);
+            del.setString(4, retDate);
+            del.executeUpdate();
+        } catch (Exception ignored) {}
 
         FlightUpdater.updateFlights(origin, destination, depDate, retDate, adults, children, infants, cabin, currency);
 

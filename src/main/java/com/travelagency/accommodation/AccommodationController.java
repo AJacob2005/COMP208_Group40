@@ -14,6 +14,7 @@ public class AccommodationController {
         filter.setLocation((String) data.get("location"));
         filter.setCheckIn(LocalDate.parse((String) data.get("checkIn")));
         filter.setCheckOut(LocalDate.parse((String) data.get("checkOut")));
+        filter.setMinRating(((Number) data.getOrDefault("minRating", 0)).doubleValue());
 
         int guests = ((Number) data.getOrDefault("guests", 1)).intValue();
 

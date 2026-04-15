@@ -11,7 +11,7 @@ public class AccommodationService {
         hotels.add(new Accommodation("Faithlegg House Hotel", "Waterford", 4.0, "g3662182-d276042"));
 
         hotels.add(new Accommodation("Esmeralda Hotel", "Paris", 1.0, "g187147-d235558"));
-        hotels.add(new Accommodation("Hotel Le Clement", "Parsis", 2.0, "g187147-d197436"));
+        hotels.add(new Accommodation("Hotel Le Clement", "Paris", 2.0, "g187147-d197436"));
         hotels.add(new Accommodation("Grand Hotel Malher", "Paris", 3.0, "g187147-d189693"));
         hotels.add(new Accommodation("Hotel George - Asotel", "Paris", 3.0, "g187147-d234640"));
         hotels.add(new Accommodation("Hotel Bonsoir Madame", "Paris", 4.0, "g187147-d258368"));
