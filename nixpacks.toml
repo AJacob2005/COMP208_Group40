@@ -1,5 +1,5 @@
 [phases.setup]
-nixPkgs = ["jdk21", "python3", "python312Packages.requests"]
+nixPkgs = ["jdk21", "python312", "python312Packages.requests"]
 
 [phases.build]
 cmds = ["./mvnw package -DskipTests"]
