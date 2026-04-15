@@ -2,7 +2,8 @@
 nixPkgs = ["jdk21", "python312", "python312Packages.requests"]
 
 [phases.build]
-cmds = ["./mvnw package -DskipTests"]
+cmds = ["./mvnw package -DskipTests -q"]
 
 [start]
 cmd = "java -jar target/travelagency-0.0.1-SNAPSHOT.jar"
+
