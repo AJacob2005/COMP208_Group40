@@ -2,7 +2,7 @@ console.log("project.js loaded with safety checks");
 
 
 const page = location.pathname.split('/').pop();
-if (!['account.html', 'index.html', ''].includes(page) && !localStorage.sessionToken) {
+if (page !== 'account.html' && !localStorage.sessionToken) {
     location.href = 'account.html';
 }
 
