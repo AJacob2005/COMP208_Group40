@@ -1,9 +1,11 @@
-//const API = "http://localhost:80";
-
-
-
-
 console.log("project.js loaded with safety checks");
+
+
+const page = location.pathname.split('/').pop();
+if (!['account.html', 'index.html', ''].includes(page) && !localStorage.sessionToken) {
+    location.href = 'account.html';
+}
+
 const toggle = document.getElementById("menu-toggle");
 const mobileLinks = document.getElementById("nav-links-mobile");
 
@@ -76,6 +78,8 @@ if (loginForm) {
             console.log("Login response:", data);
             alert(data.message);
             if (data.success) {
+                localStorage.sessionToken = data.sessionToken;
+                localStorage.fullName = data.fullName;
                 window.location.href = "index.html";
             }
         } catch (err) {
@@ -509,5 +513,78 @@ async function searchFlights(event) {
         if (resultsDiv) {
             resultsDiv.innerText = "Failed to fetch flights.";
         }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+async function executeCombinationSearch() {
+    const flightArea = document.getElementById("flight-list-display");
+    const accomArea = document.getElementById("accom-list-display");
+    if (flightArea) flightArea.innerHTML = "Searching flights...";
+    if (accomArea) accomArea.innerHTML = "Searching hotels...";
+
+    const fFilter = {
+        origin: document.getElementById("origin").value,
+        destination: document.getElementById("destination").value,
+        departureDate: document.getElementById("departureDate").value,
+        returnDate: document.getElementById("returnDate").value,
+        adults: document.getElementById("adults").value,
+        children: document.getElementById("children").value,
+        infants: document.getElementById("infants").value
+    };
+
+    const aFilter = {
+        location: document.getElementById("destination").value,
+        checkIn: document.getElementById("departureDate").value,
+        checkOut: document.getElementById("returnDate").value,
+        minRating: document.getElementById("minRating").value
+    };
+
+    try {
+        const [fRes, aRes] = await Promise.all([
+            fetch("http://localhost:8080/api/flights", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(fFilter)
+            }).then(r => r.json()),
+            fetch("http://localhost:8080/api/accommodations", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(aFilter)
+            }).then(r => r.json())
+        ]);
+        
+        // Re-using existing render logic functions
+        renderCombinationResults(fRes.offers || [], aRes || []);
+    } catch (e) { console.error(e); }
+}
+
+function renderCombinationResults(flights, hotels) {
+    const fList = document.getElementById("flight-list-display");
+    const aList = document.getElementById("accom-list-display");
+    
+    if(fList) {
+        fList.innerHTML = flights.length ? "" : "None found.";
+        flights.forEach(f => {
+            let div = document.createElement("div");
+            div.innerHTML = `<b>${f.airline}</b>: $${f.totalPrice} <button onclick="alert('Flight Selected')">Select</button><hr>`;
+            fList.appendChild(div);
+        });
+    }
+    if(aList) {
+        aList.innerHTML = hotels.length ? "" : "None found.";
+        hotels.forEach(h => {
+            let div = document.createElement("div");
+            div.innerHTML = `<b>${h.name}</b>: ${h.rating}⭐ <button onclick="alert('Hotel Selected')">Select</button><hr>`;
+            aList.appendChild(div);
+        });
     }
 }
