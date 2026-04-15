@@ -339,8 +339,9 @@ function displayResults(hotels) {
 
 
 function formatDateTime(str) {
+    if (!str || !str.includes('T')) return { date: '', time: '' };
     const [datePart, timePart] = str.split('T');
-    const time = timePart.slice(0,5);
+    const time = timePart ? timePart.slice(0,5) : '';
     const [y,m,d] = datePart.split('-');
     return {
         date: `${d}/${m}/${y}`,
