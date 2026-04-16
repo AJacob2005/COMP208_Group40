@@ -29,18 +29,18 @@
                 <a href="account.html">Account</a>
             </div>
         </nav>
-        <h2>Comparison and Booking</h2>
-        <div id="comparison_space">
-            <button>Confirm Booking</button>
+        <h2>Build a Trip</h2>
+        <div id="trip-builder">
+            <h3>Currently Selected</h3>
+            <div id="pending-flight-display"></div>
+            <div id="pending-hotel-display"></div>
+            <button onclick="addTripToComparison()">+ Add Trip to Comparison</button>
         </div>
-        <br>
-        <a href="payment.html">
-            <button>Proceed to Payment</button>
-        </a>
-        <br><br>
-        <a href="home_page.html">
-            <button>Home</button>
-        </a>
+
+        <h2>Compare Trips</h2>
+        <div id="booking-status"></div>
+        <div id="comparison-grid"></div>
+
         <script src="project.js"></script>
     </body>
 

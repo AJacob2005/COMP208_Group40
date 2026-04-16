@@ -1,11 +1,9 @@
+//const API = "http://localhost:80";
+
+
+
+
 console.log("project.js loaded with safety checks");
-
-
-const page = location.pathname.split('/').pop();
-if (page !== 'account.html' && !localStorage.sessionToken) {
-    location.href = 'account.html';
-}
-
 const toggle = document.getElementById("menu-toggle");
 const mobileLinks = document.getElementById("nav-links-mobile");
 
@@ -78,8 +76,6 @@ if (loginForm) {
             console.log("Login response:", data);
             alert(data.message);
             if (data.success) {
-                localStorage.sessionToken = data.sessionToken;
-                localStorage.fullName = data.fullName;
                 window.location.href = "index.html";
             }
         } catch (err) {
@@ -162,8 +158,9 @@ if (paymentForm) {
         
         const data = {
             paymentMethod: paymentMethod,
-            userId: 'user123',
-            amount: 0.00
+            userId: localStorage.getItem('sessionToken') || 'user123',
+            amount: Number(localStorage.getItem('bookingTotal') || 0),
+            bookingId: localStorage.getItem('bookingId') || ''
         };
         
         if (paymentMethod === 'card') {
@@ -343,9 +340,8 @@ function displayResults(hotels) {
 
 
 function formatDateTime(str) {
-    if (!str || !str.includes('T')) return { date: '', time: '' };
     const [datePart, timePart] = str.split('T');
-    const time = timePart ? timePart.slice(0,5) : '';
+    const time = timePart.slice(0,5);
     const [y,m,d] = datePart.split('-');
     return {
         date: `${d}/${m}/${y}`,
@@ -452,8 +448,9 @@ function selectFlight(index) {
         origin: flight.origin || '',
         destination: flight.destination || ''
     };
-    localStorage.setItem('selectedFlight', JSON.stringify(selectedFlight));
-    alert('Flight selected: ' + selectedFlight.outboundAirline + ' → ' + selectedFlight.returnAirline);
+    localStorage.setItem('pendingFlight', JSON.stringify(selectedFlight));
+    alert('Flight saved! Now select a hotel to complete your trip, or visit Compare Bookings.');
+    checkBothSelected();
 }
 
 function selectHotel(key, name, nightlyRate, totalPrice) {
@@ -465,9 +462,9 @@ function selectHotel(key, name, nightlyRate, totalPrice) {
         totalPrice: totalPrice
     };
 
-    localStorage.setItem("selectedHotel", JSON.stringify(selected));
-
-    alert("Hotel selected: " + name);
+    localStorage.setItem('pendingHotel', JSON.stringify(selected));
+    alert('Hotel saved! Now select a flight to complete your trip, or visit Compare Bookings.');
+    checkBothSelected();
 }
 
 
@@ -519,72 +516,159 @@ async function searchFlights(event) {
 
 
 
-
-
-
-
-
-
-async function executeCombinationSearch() {
-    const flightArea = document.getElementById("flight-list-display");
-    const accomArea = document.getElementById("accom-list-display");
-    if (flightArea) flightArea.innerHTML = "Searching flights...";
-    if (accomArea) accomArea.innerHTML = "Searching hotels...";
-
-    const fFilter = {
-        origin: document.getElementById("origin").value,
-        destination: document.getElementById("destination").value,
-        departureDate: document.getElementById("departureDate").value,
-        returnDate: document.getElementById("returnDate").value,
-        adults: document.getElementById("adults").value,
-        children: document.getElementById("children").value,
-        infants: document.getElementById("infants").value
-    };
-
-    const aFilter = {
-        location: document.getElementById("destination").value,
-        checkIn: document.getElementById("departureDate").value,
-        checkOut: document.getElementById("returnDate").value,
-        minRating: document.getElementById("minRating").value
-    };
-
-    try {
-        const [fRes, aRes] = await Promise.all([
-            fetch("http://localhost:8080/api/flights", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(fFilter)
-            }).then(r => r.json()),
-            fetch("http://localhost:8080/api/accommodations", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(aFilter)
-            }).then(r => r.json())
-        ]);
-        
-        // Re-using existing render logic functions
-        renderCombinationResults(fRes.offers || [], aRes || []);
-    } catch (e) { console.error(e); }
-}
-
-function renderCombinationResults(flights, hotels) {
-    const fList = document.getElementById("flight-list-display");
-    const aList = document.getElementById("accom-list-display");
-    
-    if(fList) {
-        fList.innerHTML = flights.length ? "" : "None found.";
-        flights.forEach(f => {
-            let div = document.createElement("div");
-            div.innerHTML = `<b>${f.airline}</b>: $${f.totalPrice} <button onclick="alert('Flight Selected')">Select</button><hr>`;
-            fList.appendChild(div);
-        });
-    }
-    if(aList) {
-        aList.innerHTML = hotels.length ? "" : "None found.";
-        hotels.forEach(h => {
-            let div = document.createElement("div");
-            div.innerHTML = `<b>${h.name}</b>: ${h.rating}⭐ <button onclick="alert('Hotel Selected')">Select</button><hr>`;
-            aList.appendChild(div);
-        });
+// Booking
+function checkBothSelected() {
+    const flight = localStorage.getItem('pendingFlight');
+    const hotel  = localStorage.getItem('pendingHotel');
+    if (flight && hotel) {
+        if (confirm('You\'ve selected both a flight and a hotel! Go to Compare Bookings to add this trip?')) {
+            window.location.href = 'booking_page.html';
+        }
     }
 }
+function removeSelection(type){
+    if (type == 'flight') localStorage.removeItem('pendingFlight');
+    if (type === 'hotel')  localStorage.removeItem('pendingHotel');
+    loadBookingPage();
+}
+
+function addTripToComparison() {
+    const flight = JSON.parse(localStorage.getItem('pendingFlight') || 'null');
+    const hotel  = JSON.parse(localStorage.getItem('pendingHotel')  || 'null');
+
+    if (!flight && !hotel) {
+        alert('Select a flight and/or hotel first before adding a trip.');
+        return;
+    }
+
+    const statusEl = document.getElementById('booking-status');
+    if (statusEl) statusEl.textContent = 'Saving trip…';
+
+    fetch('/api/bookings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            userId: localStorage.getItem('sessionToken') || 'guest',
+            flight: flight,
+            hotel: hotel
+        })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (!data.success) {
+            if (statusEl) statusEl.textContent = 'Error: ' + (data.message || 'Unknown');
+            return;
+        }
+        const trips = JSON.parse(localStorage.getItem('tripComparisons') || '[]');
+        trips.push({ id: data.bookingId, flight, hotel, totalPrice: data.totalPrice });
+        localStorage.setItem('tripComparisons', JSON.stringify(trips));
+        localStorage.removeItem('pendingFlight');
+        localStorage.removeItem('pendingHotel');
+        if (statusEl) statusEl.textContent = '';
+        loadBookingPage();
+    })
+    .catch(err => {
+        if (statusEl) statusEl.textContent = 'Network error. Please try again.';
+        console.error(err);
+    });
+}
+
+function removeTrip(id) {
+    let trips = JSON.parse(localStorage.getItem('tripComparisons') || '[]');
+    trips = trips.filter(t => t.id !== id);
+    localStorage.setItem('tripComparisons', JSON.stringify(trips));
+    loadBookingPage();
+}
+
+function selectTrip(id) {
+    const trips = JSON.parse(localStorage.getItem('tripComparisons') || '[]');
+    const trip = trips.find(t => t.id == id);
+    if (!trip) {
+        return;
+    }
+    localStorage.setItem('bookingId', trip.id);
+    localStorage.setItem('bookingTotal', trip.totalPrice);
+    window.location.href = 'payment.html';
+}
+
+function loadBookingPage() {
+    const pendingFlightEl = document.getElementById('pending-flight-display');
+    const pendingHotelEl  = document.getElementById('pending-hotel-display');
+    const pendingFlight   = JSON.parse(localStorage.getItem('pendingFlight') || 'null');
+    const pendingHotel    = JSON.parse(localStorage.getItem('pendingHotel')  || 'null');
+
+    if (pendingFlightEl) {
+        if (pendingFlight) {
+            const outDep = formatDateTime(pendingFlight.outboundDeparture);
+            const retArr = formatDateTime(pendingFlight.returnArrival);
+            pendingFlightEl.innerHTML = `
+                <p><strong>Flight Outbound:</strong> ${pendingFlight.outboundAirline} | ${pendingFlight.origin} → ${pendingFlight.destination} | ${outDep.date} ${outDep.time} (${pendingFlight.outboundStops} stop${pendingFlight.outboundStops === 1 ? '' : 's'})</p>
+                <p><strong>Flight Return:</strong> ${pendingFlight.returnAirline} | ${pendingFlight.destination} → ${pendingFlight.origin} | ${retArr.date} ${retArr.time} (${pendingFlight.returnStops} stop${pendingFlight.returnStops === 1 ? '' : 's'})</p>
+                <p><strong>Flight price:</strong> £${pendingFlight.price} <a href="flights.html">[change]</a></p>
+            `;
+        } else {
+            pendingFlightEl.innerHTML = '<p>No flight selected yet. <a href="flights.html">Search flights →</a></p>';
+        }
+    }
+
+    if (pendingHotelEl) {
+        if (pendingHotel) {
+            pendingHotelEl.innerHTML = `
+                <p><strong>Hotel ${pendingHotel.name}</strong> — £${Number(pendingHotel.totalPrice).toFixed(2)} <a href="accoms.html">[change]</a></p>
+            `;
+        } else {
+            pendingHotelEl.innerHTML = '<p>No hotel selected yet. <a href="accoms.html">Search hotels →</a></p>';
+        }
+    }
+
+    const grid = document.getElementById('comparison-grid');
+    if (!grid) return;
+    const trips = JSON.parse(localStorage.getItem('tripComparisons') || '[]');
+
+    if (trips.length === 0) {
+        grid.innerHTML = '<p>No trips added yet. Select a flight and hotel above, then click "Add Trip to Comparison".</p>';
+        return;
+    }
+
+    grid.innerHTML = trips.map(t => {
+        const f = t.flight;
+        const h = t.hotel;
+
+        const flightHtml = f ? (() => {
+            const outDep = formatDateTime(f.outboundDeparture);
+            const outArr = formatDateTime(f.outboundArrival);
+            const retDep = formatDateTime(f.returnDeparture);
+            const retArr = formatDateTime(f.returnArrival);
+            return `
+                <div class="trip-section">
+                    <p class="leg-label">✈ Outbound</p>
+                    <p>${f.outboundAirline} | ${f.origin} → ${f.destination}</p>
+                    <p>${outDep.date} ${outDep.time} → ${outArr.date} ${outArr.time} (${f.outboundStops} stop${f.outboundStops === 1 ? '' : 's'})</p>
+                    <p class="leg-label">✈ Return</p>
+                    <p>${f.returnAirline} | ${f.destination} → ${f.origin}</p>
+                    <p>${retDep.date} ${retDep.time} → ${retArr.date} ${retArr.time} (${f.returnStops} stop${f.returnStops === 1 ? '' : 's'})</p>
+                    <p><strong>Flight:</strong> £${f.price}</p>
+                </div>`;
+        })() : '<p>No flight</p>';
+
+        const hotelHtml = h ? `
+            <div class="trip-section">
+                <p>🏨 <strong>${h.name}</strong></p>
+                <p><strong>Hotel:</strong> £${Number(h.totalPrice).toFixed(2)}</p>
+            </div>` : '<p>No hotel</p>';
+
+        return `
+            <div class="comparison-card">
+                <h3>Trip Option</h3>
+                ${flightHtml}
+                <hr>
+                ${hotelHtml}
+                <hr>
+                <p class="trip-total"><strong>Total: £${t.totalPrice.toFixed(2)}</strong></p>
+                <button onclick="selectTrip(${t.id})">Book This Trip</button>
+                <button onclick="removeTrip(${t.id})">Remove</button>
+            </div>`;
+    }).join('');
+}
+
+
