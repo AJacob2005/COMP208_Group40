@@ -9,6 +9,21 @@ h2 {
     color: azure;
 }
 
+button {
+    padding: 12px;
+    background-color: rgb(2, 2, 66);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+button:hover {
+    background-color: rgb(25, 25, 120);
+}
+
 
 
 
@@ -133,19 +148,6 @@ h2 {
     border-radius: 6px;
     font-size: 14px;
 }
-.entry_form button {
-    padding: 12px;
-    background-color: rgb(2, 2, 66);
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 15px;
-    cursor: pointer;
-    transition: 0.2s;
-}
-.entry_form button:hover {
-    background-color: rgb(25, 25, 120);
-}
 .entry_form input {
     width: 100%;
     box-sizing: border-box;
@@ -184,16 +186,6 @@ h2 {
     position: relative;
     display: inline-block;
 }
-.dropdown-filter-button {
-    width: 100%;
-    background-color: white;
-    color: rgb(2, 2, 66);
-    padding: 10px;
-    font-size: 15px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    cursor: pointer;
-}
 .dropdown-filter-content {
     display: none;
     position: absolute; 
@@ -220,18 +212,6 @@ h2 {
     border: 1px solid #ccc;
     border-radius: 6px;
     font-size: 18px;
-}
-.filter-sort button {
-    padding: 12px;
-    background-color: rgb(2, 2, 66);
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 15px;
-    cursor: pointer;
-}
-.filter-sort button:hover {
-    background-color: rgb(25, 25, 120);
 }
 .filter-sort h3 {
     margin: 0;
@@ -381,17 +361,6 @@ h2 {
     border-radius:10px;
     background-color: #f5f7fb;
 }
-.account-button {
-    padding:8px 15px;
-    margin:5px;
-    border:none;
-    border-radius:5px;
-    background-color:rgb(2, 2, 66);
-    color:azure;
-}
-.account-button:hover{
-    background-color:#1f4e69;
-}
 .account-form label {
     color: rgb(2, 2, 66);
     font-size: 16px;
@@ -403,20 +372,6 @@ h2 {
     font-size: 16px;
     width: 100%;
     box-sizing: border-box;
-}
-.account-form button[type="submit"] {
-    margin-top: 10px;
-    padding: 12px;
-    background-color: rgb(2, 2, 66);
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 15px;
-    cursor: pointer;
-    transition: 0.2s;
-}
-.account-form button[type="submit"]:hover {
-    background-color: rgb(25, 25, 120);
 }
 
 
@@ -479,19 +434,6 @@ h2 {
     font-size: 16px;
     box-sizing: border-box;
     align-items: center;
-}
-.payment_process button {
-    padding: 12px;
-    background-color: rgb(2, 2, 66);
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 15px;
-    cursor: pointer;
-    transition: 0.2s;
-}
-.payment_process button:hover {
-    background-color: rgb(25, 25, 120);
 }
 
 

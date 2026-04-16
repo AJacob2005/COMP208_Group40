@@ -637,7 +637,7 @@ function loadBookingPage() {
                 <p><strong>Flight price:</strong> £${pendingFlight.price} <a href="flights.html">[change]</a></p>
             `;
         } else {
-            pendingFlightEl.innerHTML = '<p>No flight selected yet. <a href="flights.html">Search flights →</a></p>';
+            pendingFlightEl.innerHTML = '<p>No flight selected yet.';
         }
     }
 
@@ -647,7 +647,7 @@ function loadBookingPage() {
                 <p><strong>Hotel ${pendingHotel.name}</strong> — £${Number(pendingHotel.totalPrice).toFixed(2)} <a href="accoms.html">[change]</a></p>
             `;
         } else {
-            pendingHotelEl.innerHTML = '<p>No hotel selected yet. <a href="accoms.html">Search hotels →</a></p>';
+            pendingHotelEl.innerHTML = '<p>No hotel selected yet.';
         }
     }
 
@@ -660,45 +660,56 @@ function loadBookingPage() {
         return;
     }
 
-    grid.innerHTML = trips.map(t => {
-        const f = t.flight;
-        const h = t.hotel;
+    grid.innerHTML = `
+        <div class="trip-cards-container">
+            ${trips.map(t => {
+                const f = t.flight;
+                const h = t.hotel;
 
-        const flightHtml = f ? (() => {
-            const outDep = formatDateTime(f.outboundDeparture);
-            const outArr = formatDateTime(f.outboundArrival);
-            const retDep = formatDateTime(f.returnDeparture);
-            const retArr = formatDateTime(f.returnArrival);
-            return `
-                <div class="trip-section">
-                    <p class="leg-label">✈ Outbound</p>
-                    <p>${f.outboundAirline} | ${f.origin} → ${f.destination}</p>
-                    <p>${outDep.date} ${outDep.time} → ${outArr.date} ${outArr.time} (${f.outboundStops} stop${f.outboundStops === 1 ? '' : 's'})</p>
-                    <p class="leg-label">✈ Return</p>
-                    <p>${f.returnAirline} | ${f.destination} → ${f.origin}</p>
-                    <p>${retDep.date} ${retDep.time} → ${retArr.date} ${retArr.time} (${f.returnStops} stop${f.returnStops === 1 ? '' : 's'})</p>
-                    <p><strong>Flight:</strong> £${f.price}</p>
-                </div>`;
-        })() : '<p>No flight</p>';
+                const flightHtml = f ? (() => {
+                    const outDep = formatDateTime(f.outboundDeparture);
+                    const outArr = formatDateTime(f.outboundArrival);
+                    const retDep = formatDateTime(f.returnDeparture);
+                    const retArr = formatDateTime(f.returnArrival);
+                    return `
+                        <div class="trip-section">
+                            <div class="section-title">✈️ Flights</div>
+                            <p><strong>Outbound:</strong> ${f.origin} → ${f.destination}</p>
+                            <p>${outDep.date} ${outDep.time} → ${outArr.date} ${outArr.time}</p>
+                            <p>${f.outboundStops} stop${f.outboundStops === 1 ? '' : 's'}</p>
 
-        const hotelHtml = h ? `
-            <div class="trip-section">
-                <p>🏨 <strong>${h.name}</strong></p>
-                <p><strong>Hotel:</strong> £${Number(h.totalPrice).toFixed(2)}</p>
-            </div>` : '<p>No hotel</p>';
+                            <p><strong>Return:</strong> ${f.destination} → ${f.origin}</p>
+                            <p>${retDep.date} ${retDep.time} → ${retArr.date} ${retArr.time}</p>
+                            <p>${f.returnStops} stop${f.returnStops === 1 ? '' : 's'}</p>
 
-        return `
-            <div class="comparison-card">
-                <h3>Trip Option</h3>
-                ${flightHtml}
-                <hr>
-                ${hotelHtml}
-                <hr>
-                <p class="trip-total"><strong>Total: £${t.totalPrice.toFixed(2)}</strong></p>
-                <button onclick="selectTrip(${t.id})">Book This Trip</button>
-                <button onclick="removeTrip(${t.id})">Remove</button>
-            </div>`;
-    }).join('');
+                            <p class="price-line">£${f.price}</p>
+                        </div>`;
+                })() : `<p>No flight</p>`;
+
+                const hotelHtml = h ? `
+                    <div class="trip-section">
+                        <div class="section-title">🏨 Hotel</div>
+                        <p>${h.name}</p>
+                        <p class="price-line">${Number(h.totalPrice).toFixed(2)}</p>
+                    </div>` : `<p>No hotel</p>`;
+
+                return `
+                    <div class="trip-card">
+                        <div class="trip-header">Trip Option</div>
+
+                        ${flightHtml}
+                        ${hotelHtml}
+
+                        <div class="trip-footer">
+                            <div class="trip-total">£${t.totalPrice.toFixed(2)}</div>
+                            <button onclick="selectTrip(${t.id})">Book</button>
+                            <button onclick="removeTrip(${t.id})">Remove</button>
+                        </div>
+                    </div>
+                `;
+            }).join('')}
+        </div>
+    `;
 }
 
 
