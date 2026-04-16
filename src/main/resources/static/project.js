@@ -313,7 +313,9 @@ async function executeCombinationSearch() {
         location: document.getElementById("destination").value,
         checkIn: document.getElementById("departureDate").value,
         checkOut: document.getElementById("returnDate").value,
-        minRating: document.getElementById("minRating").value
+        guests: Number(document.getElementById("adults").value),
+        minRating: Number(document.getElementById("minRating").value),
+        currency: "GBP"
     };
 
     try {
@@ -323,7 +325,7 @@ async function executeCombinationSearch() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(fFilter)
             }).then(r => r.json()),
-            fetch("/api/accommodation", {
+            fetch("/api/accommodation/search", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(aFilter)
@@ -331,29 +333,45 @@ async function executeCombinationSearch() {
         ]);
         
         // Re-using existing render logic functions
-        renderCombinationResults(fRes.offers || [], aRes || []);
+        renderCombinationResults(Array.isArray(fRes) ? fRes : [], Array.isArray(aRes) ? aRes : []);
     } catch (e) { console.error(e); }
 }
 
 function renderCombinationResults(flights, hotels) {
     const fList = document.getElementById("flight-list-display");
     const aList = document.getElementById("accom-list-display");
-    
-    if(fList) {
-        fList.innerHTML = flights.length ? "" : "None found.";
-        flights.forEach(f => {
-            let div = document.createElement("div");
-            div.innerHTML = `<b>${f.airline}</b>: $${f.totalPrice} <button onclick="alert('Flight Selected')">Select</button><hr>`;
-            fList.appendChild(div);
-        });
+
+    if (fList) {
+        if (!flights.length) {
+            fList.innerHTML = "None found.";
+        } else {
+            fList.innerHTML = '';
+            currentFlightResults = flights;
+            flights.forEach((f, index) => {
+                const dep = f.outboundDeparture ? f.outboundDeparture.slice(0, 10) : '';
+                const div = document.createElement("div");
+                div.style.cssText = "border:1px solid #ddd;border-radius:6px;padding:10px;margin-bottom:8px;";
+                div.innerHTML = `<strong>${f.outboundAirline}</strong> &nbsp; ${f.origin} → ${f.destination} &nbsp; <span style="color:#036">${dep}</span> &nbsp; <strong>£${f.price}</strong> <button style="float:right" onclick="selectFlight(${index})">Select</button>`;
+                fList.appendChild(div);
+            });
+        }
     }
-    if(aList) {
-        aList.innerHTML = hotels.length ? "" : "None found.";
-        hotels.forEach(h => {
-            let div = document.createElement("div");
-            div.innerHTML = `<b>${h.name}</b>: ${h.rating}⭐ <button onclick="alert('Hotel Selected')">Select</button><hr>`;
-            aList.appendChild(div);
-        });
+
+    if (aList) {
+        const validHotels = (hotels || []).filter(h => h.totalPrice > 0 && h.nightlyRate > 0);
+        if (!validHotels.length) {
+            aList.innerHTML = "None found.";
+        } else {
+            aList.innerHTML = '';
+            validHotels.forEach(h => {
+                const loc = (h.location || '').replace(/'/g, "\\'");
+                const name = (h.name || '').replace(/'/g, "\\'");
+                const div = document.createElement("div");
+                div.style.cssText = "border:1px solid #ddd;border-radius:6px;padding:10px;margin-bottom:8px;";
+                div.innerHTML = `<strong>${h.name}</strong> &nbsp; 📍${h.location} &nbsp; ⭐${h.rating} &nbsp; <strong>£${Number(h.totalPrice).toFixed(2)}</strong> <button style="float:right" onclick="selectHotel('${h.hotelKey}','${name}',${h.nightlyRate},${Number(h.totalPrice).toFixed(2)},'${loc}')">Select</button>`;
+                aList.appendChild(div);
+            });
+        }
     }
 }
 
@@ -450,10 +468,10 @@ function displayResults(hotels) {
                     <div class="price-sub">total stay</div>
                     <button class="select-btn" onclick="selectHotel(
                         '${hotel.hotelKey}',
-                        '${hotel.name}',
+                        '${hotel.name.replace(/'/g, "\\'")  }',
                         ${hotel.nightlyRate},
                         ${conversion(hotel.totalPrice, document.getElementById("currency").value).toFixed(2)},
-                        '${hotel.location}'
+                        '${(hotel.location || '').replace(/'/g, "\\'")}'
                     )">
                         Select
                     </button>
