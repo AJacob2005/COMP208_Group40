@@ -274,13 +274,88 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const summaryElement = document.getElementById('summary');
     if (summaryElement) {
-        const total = localStorage.getItem('bookingTotal');
         const bookingId = localStorage.getItem('bookingId');
-        summaryElement.textContent = (total && bookingId)
-            ? 'Total: \u00a3' + Number(total).toFixed(2)
-            : 'Total: £0.00';
+        const total     = localStorage.getItem('bookingTotal');
+        // Only show a real total if both were set this session by selectTrip()
+        if (bookingId && total) {
+            summaryElement.textContent = 'Total: \u00a3' + Number(total).toFixed(2);
+        } else {
+            // Clear any stale value and show zero
+            localStorage.removeItem('bookingTotal');
+            summaryElement.textContent = 'Total: \u00a30.00';
+        }
     }
 });
+
+
+
+
+
+
+
+async function executeCombinationSearch() {
+    const flightArea = document.getElementById("flight-list-display");
+    const accomArea = document.getElementById("accom-list-display");
+    if (flightArea) flightArea.innerHTML = "Searching flights...";
+    if (accomArea) accomArea.innerHTML = "Searching hotels...";
+
+    const fFilter = {
+        origin: document.getElementById("origin").value,
+        destination: document.getElementById("destination").value,
+        departureDate: document.getElementById("departureDate").value,
+        returnDate: document.getElementById("returnDate").value,
+        adults: document.getElementById("adults").value,
+        children: document.getElementById("children").value,
+        infants: document.getElementById("infants").value
+    };
+
+    const aFilter = {
+        location: document.getElementById("destination").value,
+        checkIn: document.getElementById("departureDate").value,
+        checkOut: document.getElementById("returnDate").value,
+        minRating: document.getElementById("minRating").value
+    };
+
+    try {
+        const [fRes, aRes] = await Promise.all([
+            fetch("/api/flights", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(fFilter)
+            }).then(r => r.json()),
+            fetch("/api/accommodation", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(aFilter)
+            }).then(r => r.json())
+        ]);
+        
+        // Re-using existing render logic functions
+        renderCombinationResults(fRes.offers || [], aRes || []);
+    } catch (e) { console.error(e); }
+}
+
+function renderCombinationResults(flights, hotels) {
+    const fList = document.getElementById("flight-list-display");
+    const aList = document.getElementById("accom-list-display");
+    
+    if(fList) {
+        fList.innerHTML = flights.length ? "" : "None found.";
+        flights.forEach(f => {
+            let div = document.createElement("div");
+            div.innerHTML = `<b>${f.airline}</b>: $${f.totalPrice} <button onclick="alert('Flight Selected')">Select</button><hr>`;
+            fList.appendChild(div);
+        });
+    }
+    if(aList) {
+        aList.innerHTML = hotels.length ? "" : "None found.";
+        hotels.forEach(h => {
+            let div = document.createElement("div");
+            div.innerHTML = `<b>${h.name}</b>: ${h.rating}⭐ <button onclick="alert('Hotel Selected')">Select</button><hr>`;
+            aList.appendChild(div);
+        });
+    }
+}
 
 
 
@@ -377,7 +452,8 @@ function displayResults(hotels) {
                         '${hotel.hotelKey}',
                         '${hotel.name}',
                         ${hotel.nightlyRate},
-                        ${conversion(hotel.totalPrice, document.getElementById("currency").value).toFixed(2)}
+                        ${conversion(hotel.totalPrice, document.getElementById("currency").value).toFixed(2)},
+                        '${hotel.location}'
                     )">
                         Select
                     </button>
@@ -508,13 +584,14 @@ function selectFlight(index) {
     checkBothSelected();
 }
 
-function selectHotel(key, name, nightlyRate, totalPrice) {
+function selectHotel(key, name, nightlyRate, totalPrice, location) {
 
     const selected = {
         hotelKey: key,
         name: name,
         nightlyRate: nightlyRate,
-        totalPrice: totalPrice
+        totalPrice: totalPrice,
+        location: location || ''
     };
 
     localStorage.setItem('pendingHotel', JSON.stringify(selected));
@@ -724,12 +801,14 @@ function loadBookingPage() {
 
                 return `
                     <div class="trip-card">
-                        <div class="trip-header">Trip Option: ${h.location}</div>
+                        <div class="trip-header">${h ? h.location || h.name : (f ? f.destination : 'Trip')}</div>
 
                         ${flightHtml}
                         ${hotelHtml}
 
                         <div class="trip-footer">
+                            <br>
+                            <p>Total Price:>
                             <div class="trip-total">£${t.totalPrice.toFixed(2)}</div>
                             <button onclick="selectTrip(${t.id})">Book</button>
                             <button onclick="removeTrip(${t.id})">Remove</button>
