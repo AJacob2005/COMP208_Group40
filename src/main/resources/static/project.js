@@ -182,12 +182,21 @@ if (paymentForm) {
             const result = await response.json();
             
             if (response.ok && result.success) {
-                alert('Payment successful! Transaction ID: ' + result.transactionId);
-
-                const txnID = result.transactionId;
-                const receiptResult = await fetch('/api/payment/receipt?id=' +txnID);
-                if (!receiptResult.ok) throw new Error('Failed to retrieve receipt');
-                const receipt = await receiptResult.json();
+                const receipt = {
+                    id: result.transactionId || ('TXN-' + Date.now()),
+                    bookingId: data.bookingId,
+                    amount: '\u00a3' + Number(data.amount).toFixed(2),
+                    date: new Date().toLocaleDateString('en-GB', { dateStyle: 'long' }),
+                    status: 'PAID',
+                    method: paymentMethod,
+                    authCode: result.transactionId ? result.transactionId.slice(-6).toUpperCase() : 'N/A'
+                };
+                document.getElementById('paymentForm').style.display = 'none';
+                const statusEl = document.getElementById('paymentStatus');
+                if (statusEl) {
+                    statusEl.style.cssText = 'color:green;font-weight:bold;margin-bottom:1rem;';
+                    statusEl.textContent = 'Payment confirmed! Your booking is confirmed.';
+                }
                 showReceipt(receipt);
             } else {
                 alert('Payment failed: ' + (result.message || 'Unknown error'));
@@ -200,23 +209,29 @@ if (paymentForm) {
 }
 
 function showReceipt(receipt) {
-    const receiptContent = document.getElementById("receiptContent");
-    const receiptSpace = document.getElementById("receiptSpace");
-    if (!receiptContent) {
-        return;
-    }
+    const receiptContent = document.getElementById('receiptContent');
+    const receiptSpace   = document.getElementById('receiptSpace');
+    if (!receiptContent) return;
+
     receiptContent.innerHTML = `
         <p><strong>Transaction ID:</strong> ${receipt.id}</p>
-        <p><strong>Amount:</strong> ${receipt.amount}</p>
-        <p><strong>Date:</strong> ${receipt.date}</p>
-        <p><strong>Status:</strong> ${receipt.status}</p>
+        <p><strong>Booking ID:</strong>     ${receipt.bookingId || 'N/A'}</p>
+        <p><strong>Amount Paid:</strong>    ${receipt.amount}</p>
+        <p><strong>Date:</strong>           ${receipt.date}</p>
+        <p><strong>Status:</strong>         ${receipt.status}</p>
         <p><strong>Payment Method:</strong> ${receipt.method}</p>
-        <p><strong>Auth Code:</strong> ${receipt.authCode}</p>
-        <button id="downloadReceipt">Download Receipt</button>
+        <p><strong>Auth Code:</strong>      ${receipt.authCode}</p>
     `;
 
-    const downloadButton = document.getElementById("downloadReceipt");
-    downloadButton.addEventListener("click", () => downloadReceipt(receipt));
+    if (receiptSpace) {
+        receiptSpace.style.display = 'block';
+        receiptSpace.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    const downloadBtn = document.getElementById('downloadReceipt');
+    if (downloadBtn) {
+        downloadBtn.onclick = () => downloadReceipt(receipt);
+    }
 }
 
 function downloadReceipt(receipt) {
