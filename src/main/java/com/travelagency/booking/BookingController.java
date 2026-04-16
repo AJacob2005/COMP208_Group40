@@ -10,7 +10,7 @@ import java.util.Map;
 @RequestMapping("/api/bookings")
 public class BookingController {
 
-    static final String DB_URL = "jdbc:sqlite:data/travelBookings.db";
+    public static final String DB_URL = "jdbc:sqlite:data/travelBookings.db";
     private final Gson gson = new Gson();
 
     public BookingController() {

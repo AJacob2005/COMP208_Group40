@@ -24,7 +24,7 @@ public class PaymentController {
                 amount,
                 data.getOrDefault("userId", "")
         );
-        if (result.success && data.get("bookingId") != null) {
+        if (result.isSuccess() && data.get("bookingId") != null) {
             try {
                 long bookingId = Long.parseLong(data.get("bookingId"));
                 confirmBookingInDb(bookingId);
