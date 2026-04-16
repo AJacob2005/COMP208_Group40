@@ -244,6 +244,21 @@ function downloadReceipt(receipt) {
     URL.revokeObjectURL(url);
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+    if (document.getElementById('comparison-grid')) {
+        loadBookingPage();
+    }
+
+
+    const summaryElement = document.getElementById('summary');
+    if (summaryElement) {
+        const total = localStorage.getItem('bookingTotal');
+        summaryElement.textContent = total
+            ? 'Total: \u00a3' + Number(total).toFixed(2)
+            : 'Total: £0.00';
+    }
+});
+
 
 
 

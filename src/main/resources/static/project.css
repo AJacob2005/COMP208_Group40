@@ -493,3 +493,16 @@ h2 {
 .payment_process button:hover {
     background-color: rgb(25, 25, 120);
 }
+
+
+
+
+.transaction_summary {
+    max-width: 400px;
+    margin: 100px auto;
+    text-align: center;
+    background-color: #f5f7fb;
+}
+.summary {
+    font-size: 18px;
+}
