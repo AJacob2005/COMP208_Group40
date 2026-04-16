@@ -448,3 +448,18 @@ button:hover {
 .summary {
     font-size: 18px;
 }
+
+
+
+
+.trip-cards-container {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    padding: 5px;
+}
+.trip-card {
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+}

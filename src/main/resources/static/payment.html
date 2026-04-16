@@ -83,6 +83,24 @@
                 </div>
             </div>
 
+            <div id="paypalDetails" class="cardDetails" style="display:none;">
+                <h3>PayPal</h3>
+                <p>Enter your PayPal email address to confirm payment.</p>
+                <div>
+                    <label>PayPal Email</label>
+                    <input type="email" name="paypalEmail" placeholder="your@paypal.com">
+                </div>
+            </div>
+
+            <div id="bankDetails" class="cardDetails" style="display:none;">
+                <h3>Bank Transfer</h3>
+                <p>A unique payment reference will be shown after confirmation. Use it to complete your transfer.</p>
+                <div>
+                    <label>Account Holder Name</label>
+                    <input type="text" name="bankName" placeholder="Full name on account">
+                </div>
+            </div>
+
             <button type="submit" id="payButton">Process Payment</button>
         </form>
 

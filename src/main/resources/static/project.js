@@ -1,6 +1,11 @@
 //const API = "http://localhost:80";
 
 
+const EXEMPT_PAGES = ['account.html'];
+const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+if (!EXEMPT_PAGES.includes(currentPage) && !localStorage.getItem('sessionToken')) {
+    window.location.href = 'account.html';
+}
 
 
 console.log("project.js loaded with safety checks");
@@ -76,6 +81,9 @@ if (loginForm) {
             console.log("Login response:", data);
             alert(data.message);
             if (data.success) {
+                    localStorage.setItem('sessionToken', data.sessionToken);
+                    localStorage.setItem('userId', data.userId);
+                    localStorage.setItem('fullName', data.fullName);
                 window.location.href = "index.html";
             }
         } catch (err) {
@@ -132,13 +140,11 @@ const bankOption = document.getElementById("bankTransfer");
 const cardDetails = document.getElementById("cardDetails");
 
 function updatePaymentDisplay() {
-    if (cardDetails) {
-        if (cardOption && cardOption.checked) {
-            cardDetails.style.display = "block";
-        } else {
-            cardDetails.style.display = "none";
-        }
-    }
+    const paypalDetails = document.getElementById('paypalDetails');
+    const bankDetails   = document.getElementById('bankDetails');
+    if (cardDetails)   cardDetails.style.display   = (cardOption   && cardOption.checked)   ? 'flex' : 'none';
+    if (paypalDetails) paypalDetails.style.display = (paypalOption && paypalOption.checked) ? 'flex' : 'none';
+    if (bankDetails)   bankDetails.style.display   = (bankOption   && bankOption.checked)   ? 'flex' : 'none';
 }
 
 if (cardOption) cardOption.addEventListener("change", updatePaymentDisplay);
@@ -155,19 +161,28 @@ if (paymentForm) {
         
         const formData = new FormData(paymentForm);
         const paymentMethod = formData.get('paymentMethod');
-        
+
+        if (!paymentMethod) {
+            alert('Please select a payment method.');
+            return;
+        }
+
         const data = {
             paymentMethod: paymentMethod,
-            userId: localStorage.getItem('sessionToken') || 'user123',
+            userId: localStorage.getItem('userId') || 'user123',
             amount: Number(localStorage.getItem('bookingTotal') || 0),
             bookingId: localStorage.getItem('bookingId') || ''
         };
-        
+
         if (paymentMethod === 'card') {
-            data.cardName = formData.get('cardName');
+            data.cardName   = formData.get('cardName');
             data.cardNumber = formData.get('cardNumber');
             data.expiryDate = formData.get('expiryDate');
-            data.cvv = formData.get('cvv');
+            data.cvv        = formData.get('cvv');
+        } else if (paymentMethod === 'paypal') {
+            data.paypalEmail = formData.get('paypalEmail');
+        } else if (paymentMethod === 'bank') {
+            data.bankName = formData.get('bankName');
         }
         
         try {
@@ -182,21 +197,27 @@ if (paymentForm) {
             const result = await response.json();
             
             if (response.ok && result.success) {
+                const isBankTransfer = paymentMethod === 'bank';
                 const receipt = {
                     id: result.transactionId || ('TXN-' + Date.now()),
                     bookingId: data.bookingId,
                     amount: '\u00a3' + Number(data.amount).toFixed(2),
                     date: new Date().toLocaleDateString('en-GB', { dateStyle: 'long' }),
-                    status: 'PAID',
-                    method: paymentMethod,
-                    authCode: result.transactionId ? result.transactionId.slice(-6).toUpperCase() : 'N/A'
+                    status: isBankTransfer ? 'PENDING' : 'PAID',
+                    method: result.paymentMethod || paymentMethod,
+                    authCode: result.authCode || (result.transactionId ? result.transactionId.slice(-6).toUpperCase() : 'N/A'),
+                    bankReference: isBankTransfer ? result.message : null
                 };
                 document.getElementById('paymentForm').style.display = 'none';
                 const statusEl = document.getElementById('paymentStatus');
                 if (statusEl) {
                     statusEl.style.cssText = 'color:green;font-weight:bold;margin-bottom:1rem;';
-                    statusEl.textContent = 'Payment confirmed! Your booking is confirmed.';
+                    statusEl.textContent = isBankTransfer
+                        ? 'Bank transfer initiated! Please use the reference below to complete your payment.'
+                        : 'Payment confirmed! Your booking is confirmed.';
                 }
+                localStorage.removeItem('bookingId');
+                localStorage.removeItem('bookingTotal');
                 showReceipt(receipt);
             } else {
                 alert('Payment failed: ' + (result.message || 'Unknown error'));
@@ -216,11 +237,12 @@ function showReceipt(receipt) {
     receiptContent.innerHTML = `
         <p><strong>Transaction ID:</strong> ${receipt.id}</p>
         <p><strong>Booking ID:</strong>     ${receipt.bookingId || 'N/A'}</p>
-        <p><strong>Amount Paid:</strong>    ${receipt.amount}</p>
+        <p><strong>Amount:</strong>         ${receipt.amount}</p>
         <p><strong>Date:</strong>           ${receipt.date}</p>
         <p><strong>Status:</strong>         ${receipt.status}</p>
         <p><strong>Payment Method:</strong> ${receipt.method}</p>
         <p><strong>Auth Code:</strong>      ${receipt.authCode}</p>
+        ${receipt.bankReference ? `<p style="color:#c00;font-weight:bold;">Bank Reference: ${receipt.bankReference}</p>` : ''}
     `;
 
     if (receiptSpace) {
@@ -253,7 +275,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const summaryElement = document.getElementById('summary');
     if (summaryElement) {
         const total = localStorage.getItem('bookingTotal');
-        summaryElement.textContent = total
+        const bookingId = localStorage.getItem('bookingId');
+        summaryElement.textContent = (total && bookingId)
             ? 'Total: \u00a3' + Number(total).toFixed(2)
             : 'Total: £0.00';
     }
@@ -327,14 +350,16 @@ function displayResults(hotels) {
     const resultsDiv = document.getElementById("results");
     resultsDiv.innerHTML = "";
 
-    if (!hotels || hotels.length === 0) {
+    const validHotels = (hotels || []).filter(h => h.totalPrice > 0 && h.nightlyRate > 0);
+
+    if (validHotels.length === 0) {
         resultsDiv.innerHTML = "<p>No hotels found</p>";
         return;
     }
 
     let html = `<div class="hotel-cards-container">`;
 
-    hotels.forEach(hotel => {
+    validHotels.forEach(hotel => {
         html += `
             <div class="hotel-card">
                 <div class="hotel-info">
@@ -574,11 +599,12 @@ function addTripToComparison() {
     const statusEl = document.getElementById('booking-status');
     if (statusEl) statusEl.textContent = 'Saving trip…';
 
+    const tripsKey = 'tripComparisons_' + (localStorage.getItem('userId') || 'guest');
     fetch('/api/bookings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-            userId: localStorage.getItem('sessionToken') || 'guest',
+            userId: localStorage.getItem('userId') || 'guest',
             flight: flight,
             hotel: hotel
         })
@@ -589,9 +615,9 @@ function addTripToComparison() {
             if (statusEl) statusEl.textContent = 'Error: ' + (data.message || 'Unknown');
             return;
         }
-        const trips = JSON.parse(localStorage.getItem('tripComparisons') || '[]');
+        const trips = JSON.parse(localStorage.getItem(tripsKey) || '[]');
         trips.push({ id: data.bookingId, flight, hotel, totalPrice: data.totalPrice });
-        localStorage.setItem('tripComparisons', JSON.stringify(trips));
+        localStorage.setItem(tripsKey, JSON.stringify(trips));
         localStorage.removeItem('pendingFlight');
         localStorage.removeItem('pendingHotel');
         if (statusEl) statusEl.textContent = '';
@@ -604,14 +630,16 @@ function addTripToComparison() {
 }
 
 function removeTrip(id) {
-    let trips = JSON.parse(localStorage.getItem('tripComparisons') || '[]');
+    const tripsKey = 'tripComparisons_' + (localStorage.getItem('userId') || 'guest');
+    let trips = JSON.parse(localStorage.getItem(tripsKey) || '[]');
     trips = trips.filter(t => t.id !== id);
-    localStorage.setItem('tripComparisons', JSON.stringify(trips));
+    localStorage.setItem(tripsKey, JSON.stringify(trips));
     loadBookingPage();
 }
 
 function selectTrip(id) {
-    const trips = JSON.parse(localStorage.getItem('tripComparisons') || '[]');
+    const tripsKey = 'tripComparisons_' + (localStorage.getItem('userId') || 'guest');
+    const trips = JSON.parse(localStorage.getItem(tripsKey) || '[]');
     const trip = trips.find(t => t.id == id);
     if (!trip) {
         return;
@@ -634,7 +662,7 @@ function loadBookingPage() {
             pendingFlightEl.innerHTML = `
                 <p><strong>Flight Outbound:</strong> ${pendingFlight.outboundAirline} | ${pendingFlight.origin} → ${pendingFlight.destination} | ${outDep.date} ${outDep.time} (${pendingFlight.outboundStops} stop${pendingFlight.outboundStops === 1 ? '' : 's'})</p>
                 <p><strong>Flight Return:</strong> ${pendingFlight.returnAirline} | ${pendingFlight.destination} → ${pendingFlight.origin} | ${retArr.date} ${retArr.time} (${pendingFlight.returnStops} stop${pendingFlight.returnStops === 1 ? '' : 's'})</p>
-                <p><strong>Flight price:</strong> £${pendingFlight.price} <a href="flights.html">[change]</a></p>
+                <p><strong>Flight price:</strong> £${pendingFlight.price}</p>
             `;
         } else {
             pendingFlightEl.innerHTML = '<p>No flight selected yet.';
@@ -644,7 +672,7 @@ function loadBookingPage() {
     if (pendingHotelEl) {
         if (pendingHotel) {
             pendingHotelEl.innerHTML = `
-                <p><strong>Hotel ${pendingHotel.name}</strong> — £${Number(pendingHotel.totalPrice).toFixed(2)} <a href="accoms.html">[change]</a></p>
+                <p><strong>Hotel ${pendingHotel.name}</strong> — £${Number(pendingHotel.totalPrice).toFixed(2)}</p>
             `;
         } else {
             pendingHotelEl.innerHTML = '<p>No hotel selected yet.';
@@ -653,7 +681,8 @@ function loadBookingPage() {
 
     const grid = document.getElementById('comparison-grid');
     if (!grid) return;
-    const trips = JSON.parse(localStorage.getItem('tripComparisons') || '[]');
+    const tripsKey = 'tripComparisons_' + (localStorage.getItem('userId') || 'guest');
+    const trips = JSON.parse(localStorage.getItem(tripsKey) || '[]');
 
     if (trips.length === 0) {
         grid.innerHTML = '<p>No trips added yet. Select a flight and hotel above, then click "Add Trip to Comparison".</p>';
@@ -695,7 +724,7 @@ function loadBookingPage() {
 
                 return `
                     <div class="trip-card">
-                        <div class="trip-header">Trip Option</div>
+                        <div class="trip-header">Trip Option: ${h.location}</div>
 
                         ${flightHtml}
                         ${hotelHtml}
