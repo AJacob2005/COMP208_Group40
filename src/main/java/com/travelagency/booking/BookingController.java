@@ -3,6 +3,8 @@ package com.travelagency.booking;
 import com.google.gson.Gson;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.*;
 import java.util.Map;
 
@@ -18,6 +20,11 @@ public class BookingController {
     }
 
     private void initDb() {
+        try {
+            Files.createDirectories(Paths.get("data"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         String createBookings =
             "CREATE TABLE IF NOT EXISTS bookings (" +
             "  booking_id   INTEGER PRIMARY KEY AUTOINCREMENT," +
