@@ -1,41 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
     <head>
         <link rel="stylesheet" href="project.css">
+        <link rel="icon" href="data:," />
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Travel Agency Booking and Comparison System</title>
+        <title>Booking Page</title>
     </head>
     <body>
         <h1>Travel Agency Booking and Comparison System</h1>
         <nav class="navbar">
             <div class="nav-links-desktop">
-                <a href="home_page.html" class="active">Home</a>
+                <a href="index.html">Home</a>
                 <a href="flights.html">Flights</a>
                 <a href="accoms.html">Accommodation</a>
-                <a href="booking_page.html">Compare Bookings</a>
+                <a href="booking_page.html" class="active">Compare Bookings</a>
                 <a href="payment.html">Payment</a>
                 <a href="account.html">Account</a>
             </div>
             
             <div class="menu-toggle" id="menu-toggle">☰</div>
             <div class="nav-links-mobile" id="nav-links-mobile">
-                <a href="home_page.html" class="active">Home</a>
+                <a href="index.html">Home</a>
                 <a href="flights.html">Flights</a>
                 <a href="accoms.html">Accommodation</a>
-                <a href="booking_page.html">Compare Bookings</a>
+                <a href="booking_page.html" class="active">Compare Bookings</a>
                 <a href="payment.html">Payment</a>
                 <a href="account.html">Account</a>
             </div>
         </nav>
-
-        <div class="info-section">
-            <h2>Your Dream Holiday Starts Here</h2>
-            <div> Welcome to the best place to book your dream holiday at the cheapest prices. 
-                <br>Compare flights, discover top-rated hotels, and build complete travel packages in one simple system.
-                <br>Everything you need to plan and book your next trip is in one place. 
-            </div>
-        </div> 
+        <h2>Build a Trip</h2>
         <div id="trip-builder">
             <h3>Currently Selected</h3>
             <div id="pending-flight-display"></div>
@@ -43,11 +37,11 @@
             <button onclick="addTripToComparison()" class="">+ Add Trip to Comparison</button>
         </div>
 
+        <h2>Compare Trips</h2>
+        <div id="booking-status"></div>
+        <div id="comparison-grid"></div>
 
-        
         <script src="project.js"></script>
-    </body>
-</html>
     </body>
 
 </html>
