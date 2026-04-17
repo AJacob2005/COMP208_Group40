@@ -757,7 +757,7 @@ function loadBookingPage() {
             pendingFlightEl.innerHTML = `
                 <p><strong>Flight Outbound:</strong> ${pendingFlight.outboundAirline} | ${pendingFlight.origin} → ${pendingFlight.destination} | ${outDep.date} ${outDep.time} (${pendingFlight.outboundStops} stop${pendingFlight.outboundStops === 1 ? '' : 's'})</p>
                 <p><strong>Flight Return:</strong> ${pendingFlight.returnAirline} | ${pendingFlight.destination} → ${pendingFlight.origin} | ${retArr.date} ${retArr.time} (${pendingFlight.returnStops} stop${pendingFlight.returnStops === 1 ? '' : 's'})</p>
-                <p><strong>Flight price:</strong> £${pendingFlight.price}</p>
+                <p><strong>Flight price:</strong> £${pendingFlight.price} <button onclick="removeSelection('flight')">Remove</button></p>
             `;
         } else {
             pendingFlightEl.innerHTML = '<p>No flight selected yet.';
@@ -767,7 +767,7 @@ function loadBookingPage() {
     if (pendingHotelEl) {
         if (pendingHotel) {
             pendingHotelEl.innerHTML = `
-                <p><strong>Hotel ${pendingHotel.name}</strong> — £${Number(pendingHotel.totalPrice).toFixed(2)}</p>
+                <p><strong>Hotel ${pendingHotel.name}</strong> — £${Number(pendingHotel.totalPrice).toFixed(2)}  <button onclick="removeSelection('hotel')">Remove</button></p>
             `;
         } else {
             pendingHotelEl.innerHTML = '<p>No hotel selected yet.';
