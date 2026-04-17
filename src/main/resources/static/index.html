@@ -29,51 +29,12 @@
             </div>
         </nav>
         
-        <br><br>
-
-        <div style="border: 2px solid #ccc; padding: 20px; border-radius: 8px;">
-            <h3>Plan Your Full Trip Package</h3>
-            <input type="text" id="origin" placeholder="From (Airport Code)">
-            <input type="text" id="destination" placeholder="To (Destination Code)">
-            <br><br>
-            <label>Dates:</label>
-            <input type="date" id="departureDate">
-            <input type="date" id="returnDate">
-            <br><br>
-            <input type="number" id="adults" value="1" style="width: 50px;"> Adults
-            <input type="number" id="children" value="0" style="width: 50px;"> Children
-            <input type="number" id="infants" value="0" style="width: 50px;"> Infants
-            <select id="minRating">
-                <option value="0">Min Hotel Rating</option>
-                <option value="3">3 Stars</option>
-                <option value="4">4 Stars</option>
-                <option value="5">5 Stars</option>
-            </select>
-            <br><br>
-            <button onclick="executeCombinationSearch()">Search Package</button>
+        <div id="trip-builder">
+            <h3>Currently Selected</h3>
+            <div id="pending-flight-display"></div>
+            <div id="pending-hotel-display"></div>
+            <button onclick="addTripToComparison()" class="">+ Add Trip to Comparison</button>
         </div>
-
-        <div id="results-display-area" style="display: flex; margin-top: 20px;">
-            <div style="flex: 1;">
-                <h4>Flights</h4>
-                <div id="flight-list-display"></div>
-            </div>
-            <div style="flex: 1;">
-                <h4>Accommodations</h4>
-                <div id="accom-list-display"></div>
-            </div>
-        </div>
-
-        <br><br>
-        <table border="1">
-            <tr>
-                <th>Saved Trips:</th>
-            </tr>
-        </table> 
-        <br> 
-        <a href="booking_page.html">
-            <button>Compare and View Bookings</button>
-        </a>
 
         <script src="project.js"></script>
     </body>
