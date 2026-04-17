@@ -473,8 +473,8 @@ button:hover {
 
 
 .info-section {
-    max-width: 900px;
-    margin: 40px auto;
+    backgrond-color: azure;
+    margin: 100px auto;
     padding: 30px;
     border-radius: 12px;
     text-align: center;
