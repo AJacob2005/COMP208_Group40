@@ -473,16 +473,16 @@ button:hover {
 
 
 .info-section {
-    backgrond-color: azure;
+    max-width: 60%;
+    background-color: #f5f7fb;
     margin: 100px auto;
     padding: 30px;
+    border: 1px;
+    border-color: rgb(2, 2, 66);
     border-radius: 12px;
     text-align: center;
 }
-.info-section h2 {
-    margin-bottom: 20px;
-}
 .info-section p {
-    font-size: 16px;
+    font-size: 22px;
     margin: 10px 0;
 }
