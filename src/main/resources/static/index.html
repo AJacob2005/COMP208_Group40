@@ -10,7 +10,7 @@
         <h1>Travel Agency Booking and Comparison System</h1>
         <nav class="navbar">
             <div class="nav-links-desktop">
-                <a href="home_page.html" class="active">Home</a>
+                <a href="index.html" class="active">Home</a>
                 <a href="flights.html">Flights</a>
                 <a href="accoms.html">Accommodation</a>
                 <a href="booking_page.html">Compare Bookings</a>
@@ -20,7 +20,7 @@
             
             <div class="menu-toggle" id="menu-toggle">☰</div>
             <div class="nav-links-mobile" id="nav-links-mobile">
-                <a href="home_page.html" class="active">Home</a>
+                <a href="index.html" class="active">Home</a>
                 <a href="flights.html">Flights</a>
                 <a href="accoms.html">Accommodation</a>
                 <a href="booking_page.html">Compare Bookings</a>
@@ -29,8 +29,9 @@
             </div>
         </nav>
         
+        
+        <h2>Your Dream Holiday Starts Here</h2>
         <div class="info-section">
-            <h2>Your Dream Holiday Starts Here</h2>
             <div> 
                 <p>Welcome to the best place to book your dream holiday at the cheapest prices. </p>
                 <p>Compare flights, discover top-rated hotels, and build complete travel packages in one simple system.</p>
@@ -38,21 +39,15 @@
             </div>
         </div> 
 
-        <div id="comparison-grid" style="diplay: none;"></div>
+        <br><br>
+        <div id="comparison-grid" style="display: none;"></div>
         <div id="trip-builder">
             <h3>Currently Selected</h3>
-            <div id="pending-flight-display">
-                <button onclick="removeSelection('flight')">Remove</button>button>
-            </div>
-            <div id="pending-hotel-display">
-                <button onclick="removeSelection('hotel')">Remove</button>button>
-            </div>
+            <div id="pending-flight-display"></div>
+            <div id="pending-hotel-display"></div>
             <button onclick="addTripToComparison()" class="">+ Add Trip to Comparison</button>
         </div>
 
         <script src="project.js"></script>
     </body>
-</html>
-    </body>
-
 </html>
