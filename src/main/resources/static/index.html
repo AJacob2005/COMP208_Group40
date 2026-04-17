@@ -41,8 +41,12 @@
         <div id="comparison-grid" style="diplay: none;"></div>
         <div id="trip-builder">
             <h3>Currently Selected</h3>
-            <div id="pending-flight-display"></div>
-            <div id="pending-hotel-display"></div>
+            <div id="pending-flight-display">
+                <button onclick="removeSelection('flight')">Remove</button>button>
+            </div>
+            <div id="pending-hotel-display">
+                <button onclick="removeSelection('hotel')">Remove</button>button>
+            </div>
             <button onclick="addTripToComparison()" class="">+ Add Trip to Comparison</button>
         </div>
 
