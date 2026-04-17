@@ -466,3 +466,23 @@ button:hover {
     flex-direction: column;
     padding: 5px;
 }
+
+
+
+
+
+
+.info-section {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+}
+.info-section h2 {
+    margin-bottom: 20px;
+}
+.info-section p {
+    font-size: 16px;
+    margin: 10px 0;
+}
