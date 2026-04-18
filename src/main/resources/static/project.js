@@ -1,14 +1,13 @@
-//const API = "http://localhost:80";
-
-
 const EXEMPT_PAGES = ['account.html'];
 const currentPage = window.location.pathname.split('/').pop() || 'index.html';
 if (!EXEMPT_PAGES.includes(currentPage) && !localStorage.getItem('sessionToken')) {
     window.location.href = 'account.html';
 }
 
+// ========================================
+// Navbar Display Logic
+// ========================================
 
-console.log("project.js loaded with safety checks");
 const toggle = document.getElementById("menu-toggle");
 const mobileLinks = document.getElementById("nav-links-mobile");
 
@@ -16,7 +15,6 @@ if (toggle && mobileLinks) {
   toggle.addEventListener("click", () => {
     mobileLinks.classList.toggle("active");
   });
-
 
   const links = mobileLinks.querySelectorAll("a");
   links.forEach(link => {
@@ -27,30 +25,10 @@ if (toggle && mobileLinks) {
 }
 
 
-document.querySelectorAll('.dropdown-filter-button').forEach(button => {
-    button.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const dropdown = button.parentElement;
-        dropdown.classList.toggle('show');
-    });
-});
 
-window.addEventListener('click', function(e) {
-    document.querySelectorAll('.dropdown-filter').forEach(drop => {
-        if (!drop.contains(e.target)) {
-            drop.classList.remove('show');
-        }
-    });
-});
-
-
-
-
-
-
-
-
-// Account form handlers
+// ========================================
+// Login / Create Account Display
+// ========================================
 function showLogin() {
     document.getElementById("login-form").style.display = "block";
     document.getElementById("create-form").style.display = "none";
@@ -60,6 +38,10 @@ function showCreate() {
     document.getElementById("login-form").style.display = "none";
     document.getElementById("create-form").style.display = "block";
 }
+
+// ========================================
+// Login
+// ========================================
 
 const loginForm = document.getElementById("login-form");
 if (loginForm) {
@@ -92,6 +74,11 @@ if (loginForm) {
         }
     });
 }
+
+
+// ========================================
+// Create Account
+// ========================================
 
 const createForm = document.getElementById("create-form");
 if (createForm) {
@@ -132,7 +119,9 @@ if (createForm) {
 
 
 
-
+// ========================================
+// Payment Options Display
+// ========================================
 const cardOption = document.getElementById("card");
 const paypalOption = document.getElementById("paypal");
 const bankOption = document.getElementById("bankTransfer");
@@ -153,7 +142,12 @@ if (bankOption) bankOption.addEventListener("change", updatePaymentDisplay);
 
 updatePaymentDisplay();
 
-// Payment form handling
+
+
+// ========================================
+// Payment Processing
+// ========================================
+
 const paymentForm = document.querySelector('.payment_process');
 if (paymentForm) {
     paymentForm.addEventListener('submit', async (e) => {
@@ -229,6 +223,10 @@ if (paymentForm) {
     });
 }
 
+
+// ========================================
+// Receipt Display
+// ========================================
 function showReceipt(receipt) {
     const receiptContent = document.getElementById('receiptContent');
     const receiptSpace   = document.getElementById('receiptSpace');
@@ -255,6 +253,11 @@ function showReceipt(receipt) {
         downloadBtn.onclick = () => downloadReceipt(receipt);
     }
 }
+
+
+// ========================================
+// Receipt Downloading
+// ========================================
 
 function downloadReceipt(receipt) {
     const blob = new Blob([JSON.stringify(receipt, null, 2)], { type: "application/json" });
@@ -291,102 +294,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-
-
-async function executeCombinationSearch() {
-    const flightArea = document.getElementById("flight-list-display");
-    const accomArea = document.getElementById("accom-list-display");
-    if (flightArea) flightArea.innerHTML = "Searching flights...";
-    if (accomArea) accomArea.innerHTML = "Searching hotels...";
-
-    const fFilter = {
-        origin: document.getElementById("origin").value,
-        destination: document.getElementById("destination").value,
-        departureDate: document.getElementById("departureDate").value,
-        returnDate: document.getElementById("returnDate").value,
-        adults: document.getElementById("adults").value,
-        children: document.getElementById("children").value,
-        infants: document.getElementById("infants").value
-    };
-
-    const aFilter = {
-        location: document.getElementById("destination").value,
-        checkIn: document.getElementById("departureDate").value,
-        checkOut: document.getElementById("returnDate").value,
-        guests: Number(document.getElementById("adults").value),
-        minRating: Number(document.getElementById("minRating").value),
-        currency: "GBP"
-    };
-
-    try {
-        const [fRes, aRes] = await Promise.all([
-            fetch("/api/flights", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(fFilter)
-            }).then(r => r.json()),
-            fetch("/api/accommodation/search", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(aFilter)
-            }).then(r => r.json())
-        ]);
-        
-        // Re-using existing render logic functions
-        renderCombinationResults(Array.isArray(fRes) ? fRes : [], Array.isArray(aRes) ? aRes : []);
-    } catch (e) { console.error(e); }
-}
-
-function renderCombinationResults(flights, hotels) {
-    const fList = document.getElementById("flight-list-display");
-    const aList = document.getElementById("accom-list-display");
-
-    if (fList) {
-        if (!flights.length) {
-            fList.innerHTML = "None found.";
-        } else {
-            fList.innerHTML = '';
-            currentFlightResults = flights;
-            flights.forEach((f, index) => {
-                const dep = f.outboundDeparture ? f.outboundDeparture.slice(0, 10) : '';
-                const div = document.createElement("div");
-                div.style.cssText = "border:1px solid #ddd;border-radius:6px;padding:10px;margin-bottom:8px;";
-                div.innerHTML = `<strong>${f.outboundAirline}</strong> &nbsp; ${f.origin} → ${f.destination} &nbsp; <span style="color:#036">${dep}</span> &nbsp; <strong>£${f.price}</strong> <button style="float:right" onclick="selectFlight(${index})">Select</button>`;
-                fList.appendChild(div);
-            });
-        }
-    }
-
-    if (aList) {
-        const validHotels = (hotels || []).filter(h => h.totalPrice > 0 && h.nightlyRate > 0);
-        if (!validHotels.length) {
-            aList.innerHTML = "None found.";
-        } else {
-            aList.innerHTML = '';
-            validHotels.forEach(h => {
-                const loc = (h.location || '').replace(/'/g, "\\'");
-                const name = (h.name || '').replace(/'/g, "\\'");
-                const div = document.createElement("div");
-                div.style.cssText = "border:1px solid #ddd;border-radius:6px;padding:10px;margin-bottom:8px;";
-                div.innerHTML = `<strong>${h.name}</strong> &nbsp; 📍${h.location} &nbsp; ⭐${h.rating} &nbsp; <strong>£${Number(h.totalPrice).toFixed(2)}</strong> <button style="float:right" onclick="selectHotel('${h.hotelKey}','${name}',${h.nightlyRate},${Number(h.totalPrice).toFixed(2)},'${loc}')">Select</button>`;
-                aList.appendChild(div);
-            });
-        }
-    }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
+// ========================================
+// Hotel Logic
+// ========================================
 
 function conversion(price, currency) {
     if (currency == "USD") return price * 1.25;
@@ -396,8 +306,7 @@ function conversion(price, currency) {
 
 async function searchHotels() {
     console.log("searchHotels() fired");
-
-
+    
     const location = document.getElementById("location").value;
     const checkIn = document.getElementById("checkIn").value;
     const checkOut = document.getElementById("checkOut").value;
@@ -484,8 +393,70 @@ function displayResults(hotels) {
     resultsDiv.innerHTML = html;
 }
 
+function selectHotel(key, name, nightlyRate, totalPrice, location) {
+    const selected = {
+        hotelKey: key,
+        name: name,
+        nightlyRate: nightlyRate,
+        totalPrice: totalPrice,
+        location: location || ''
+    };
+
+    localStorage.setItem('pendingHotel', JSON.stringify(selected));
+    alert('Hotel saved! Now select a flight to complete your trip, or visit Compare Bookings.');
+    checkBothSelected();
+}
 
 
+
+
+
+
+
+// ========================================
+// Flight Logic
+// ========================================
+
+let currentFlightResults = [];
+
+async function searchFlights(event) {
+    event.preventDefault();
+    const resultsDiv = document.getElementById("results");
+    if (resultsDiv) {
+        resultsDiv.innerText = 'Loading flights...';
+    }
+
+    const flightData = {
+        origin: document.getElementById("origin").value,
+        destination: document.getElementById("destination").value,
+        departureDate: document.getElementById("departureDate").value,
+        returnDate: document.getElementById("returnDate").value,
+        adults: document.getElementById("adults").value,
+        children: 0,
+        infants: 0,
+        cabin: document.getElementById("cabin").value,
+        currency: document.getElementById("currency").value
+    };
+
+    try {
+        const response = await fetch("/api/flights", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(flightData)
+        });
+
+        if (!response.ok) throw new Error(`Server error: ${response.status}`);
+        const flights = await response.json();
+        renderFlights(flights);
+    }
+    catch (err) {
+        console.error(err);
+        const resultsDiv = document.getElementById("results");
+        if (resultsDiv) {
+            resultsDiv.innerText = "Failed to fetch flights.";
+        }
+    }
+}
 
 
 function formatDateTime(str) {
@@ -497,6 +468,7 @@ function formatDateTime(str) {
         time: time
     };
 }
+
 function renderFlights(flights) {
     const resultsDiv = document.getElementById('results');
     if (!resultsDiv) return;
@@ -602,71 +574,20 @@ function selectFlight(index) {
     checkBothSelected();
 }
 
-function selectHotel(key, name, nightlyRate, totalPrice, location) {
-
-    const selected = {
-        hotelKey: key,
-        name: name,
-        nightlyRate: nightlyRate,
-        totalPrice: totalPrice,
-        location: location || ''
-    };
-
-    localStorage.setItem('pendingHotel', JSON.stringify(selected));
-    alert('Hotel saved! Now select a flight to complete your trip, or visit Compare Bookings.');
-    checkBothSelected();
-}
 
 
 
 
 
 
-let currentFlightResults = [];
-
-async function searchFlights(event) {
-    event.preventDefault();
-    const resultsDiv = document.getElementById("results");
-    if (resultsDiv) {
-        resultsDiv.innerText = 'Loading flights...';
-    }
-
-    const flightData = {
-        origin: document.getElementById("origin").value,
-        destination: document.getElementById("destination").value,
-        departureDate: document.getElementById("departureDate").value,
-        returnDate: document.getElementById("returnDate").value,
-        adults: document.getElementById("adults").value,
-        children: 0,
-        infants: 0,
-        cabin: document.getElementById("cabin").value,
-        currency: document.getElementById("currency").value
-    };
-
-    try {
-        const response = await fetch("/api/flights", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(flightData)
-        });
-
-        if (!response.ok) throw new Error(`Server error: ${response.status}`);
-        const flights = await response.json();
-        renderFlights(flights);
-    }
-    catch (err) {
-        console.error(err);
-        const resultsDiv = document.getElementById("results");
-        if (resultsDiv) {
-            resultsDiv.innerText = "Failed to fetch flights.";
-        }
-    }
-}
 
 
 
 
-// Booking
+
+// ========================================
+// Booking Logic
+// ========================================
 function checkBothSelected() {
     const flight = localStorage.getItem('pendingFlight');
     const hotel  = localStorage.getItem('pendingHotel');
@@ -836,6 +757,108 @@ function loadBookingPage() {
             }).join('')}
         </div>
     `;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ========================================
+// Combination Search (unused)
+// ========================================
+
+async function executeCombinationSearch() {
+    const flightArea = document.getElementById("flight-list-display");
+    const accomArea = document.getElementById("accom-list-display");
+    if (flightArea) flightArea.innerHTML = "Searching flights...";
+    if (accomArea) accomArea.innerHTML = "Searching hotels...";
+
+    const fFilter = {
+        origin: document.getElementById("origin").value,
+        destination: document.getElementById("destination").value,
+        departureDate: document.getElementById("departureDate").value,
+        returnDate: document.getElementById("returnDate").value,
+        adults: document.getElementById("adults").value,
+        children: document.getElementById("children").value,
+        infants: document.getElementById("infants").value
+    };
+
+    const aFilter = {
+        location: document.getElementById("destination").value,
+        checkIn: document.getElementById("departureDate").value,
+        checkOut: document.getElementById("returnDate").value,
+        guests: Number(document.getElementById("adults").value),
+        minRating: Number(document.getElementById("minRating").value),
+        currency: "GBP"
+    };
+
+    try {
+        const [fRes, aRes] = await Promise.all([
+            fetch("/api/flights", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(fFilter)
+            }).then(r => r.json()),
+            fetch("/api/accommodation/search", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(aFilter)
+            }).then(r => r.json())
+        ]);
+        
+        // Re-using existing render logic functions
+        renderCombinationResults(Array.isArray(fRes) ? fRes : [], Array.isArray(aRes) ? aRes : []);
+    } catch (e) { console.error(e); }
+}
+
+function renderCombinationResults(flights, hotels) {
+    const fList = document.getElementById("flight-list-display");
+    const aList = document.getElementById("accom-list-display");
+
+    if (fList) {
+        if (!flights.length) {
+            fList.innerHTML = "None found.";
+        } else {
+            fList.innerHTML = '';
+            currentFlightResults = flights;
+            flights.forEach((f, index) => {
+                const dep = f.outboundDeparture ? f.outboundDeparture.slice(0, 10) : '';
+                const div = document.createElement("div");
+                div.style.cssText = "border:1px solid #ddd;border-radius:6px;padding:10px;margin-bottom:8px;";
+                div.innerHTML = `<strong>${f.outboundAirline}</strong> &nbsp; ${f.origin} → ${f.destination} &nbsp; <span style="color:#036">${dep}</span> &nbsp; <strong>£${f.price}</strong> <button style="float:right" onclick="selectFlight(${index})">Select</button>`;
+                fList.appendChild(div);
+            });
+        }
+    }
+
+    if (aList) {
+        const validHotels = (hotels || []).filter(h => h.totalPrice > 0 && h.nightlyRate > 0);
+        if (!validHotels.length) {
+            aList.innerHTML = "None found.";
+        } else {
+            aList.innerHTML = '';
+            validHotels.forEach(h => {
+                const loc = (h.location || '').replace(/'/g, "\\'");
+                const name = (h.name || '').replace(/'/g, "\\'");
+                const div = document.createElement("div");
+                div.style.cssText = "border:1px solid #ddd;border-radius:6px;padding:10px;margin-bottom:8px;";
+                div.innerHTML = `<strong>${h.name}</strong> &nbsp; 📍${h.location} &nbsp; ⭐${h.rating} &nbsp; <strong>£${Number(h.totalPrice).toFixed(2)}</strong> <button style="float:right" onclick="selectHotel('${h.hotelKey}','${name}',${h.nightlyRate},${Number(h.totalPrice).toFixed(2)},'${loc}')">Select</button>`;
+                aList.appendChild(div);
+            });
+        }
+    }
 }
 
 
