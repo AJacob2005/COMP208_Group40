@@ -34,6 +34,12 @@ public class AccommodationService {
         hotels.add(new Accommodation("The Ritz-Carlton, Central Park", "New York", 5.0, "g60763-d224224"));
         hotels.add(new Accommodation("The Plaza New York", "New York", 5.0, "g60763-d675616"));
 
+        // California
+        hotels.add(new Accommodation("SeaCrest OceanFront Hotel", "California", 3.0, "g32894-d79297"));
+        hotels.add(new Accommodation("Hilton Universal City", "California", 4.0, "g32655-d78694"));
+        hotels.add(new Accommodation("L'Ermitage Beverly Hills", "California", 5.0, "g32070-d76065"));
+        hotels.add(new Accommodation("Claremont Resort & Club", "California", 5.0, "g32810-d80965"));
+        
         // London
         hotels.add(new Accommodation("Travelodge Hotel", "London", 1.0, "g186338-d630310"));
         hotels.add(new Accommodation("Crestfield Hotel", "London", 2.0, "g186338-d263679"));
@@ -45,6 +51,82 @@ public class AccommodationService {
         hotels.add(new Accommodation("Hotel 41", "London", 5.0, "g186338-d188961"));
         hotels.add(new Accommodation("The Egerton House Hotel", "London", 5.0, "g186338-d192122"));
         hotels.add(new Accommodation("The Bloomsbury Hotel", "London", 5.0, "g186338-d209229"));
+
+        // Tokyo
+        hotels.add(new Accommodation("Chapter Two Tokyo", "Tokyo", 1.0, "g1066461-d13819464"));
+        hotels.add(new Accommodation("The Milennials Shibuya", "Tokyo", 2.0, "g1066456-d13398497"));
+        hotels.add(new Accommodation("Koko Hotel", "Tokyo", 3.0, "g1066444-d16736885"));
+        hotels.add(new Accommodation("Hotel Sunroute Plaza Shinjuku", "Tokyo", 3.0, "g14133713-d320581"));
+        hotels.add(new Accommodation("Miyashita Park", "Tokyo", 4.0, "g1066456-d19990197"));
+        hotels.add(new Accommodation("Hotel Gracery Shinjuku", "Tokyo", 4.0, "g14133667-d6987624"));
+        hotels.add(new Accommodation(Keio Plaza Hotel"", "Tokyo", 4.0, "g14133673-d304305"));
+        hotels.add(new Accommodation("Intercontinental The Strings", "Tokyo", 5.0, "g1066451-d300471"));
+        hotels.add(new Accommodation("Four Seasons Hotel", "Tokyo", 5.0, "g14129477-d20057286"));
+        hotels.add(new Accommodation("Palace Hotel Tokyo", "Tokyo", 5.0, "g14129528-d2528953"));
+
+        // Spain
+        hotels.add(new Accommodation("Hotel Gaudi", "Barcelona", 3.0, "g187497-d237157"));
+        hotels.add(new Accommodation("Andante Hotel", "Barcelona", 3.0, "g187497-d2545026"));
+        hotels.add(new Accommodation("Barcelo Torre de Madrid", "Madrid", 5.0, "g187514-d10847573"));
+        hotels.add(new Accommodation("Hotel Urban", "Madrid", 5.0, "g187514-d296957"));
+        hotels.add(new Accommodation("Eurostars Centrum", "Alicante", 4.0, "g1064230-d483592"));
+        hotels.add(new Accommodation("Hotel Kramer", "Valencia", 3.0, "g187529-d503546"));
+
+        // Italy
+        hotels.add(new Accommodation("The Carlton, a Rocco Forte", "Milan", 5.0, "g187849-d34027601"));
+        hotels.add(new Accommodation("Glam Hotel", "Milan", 4.0, "g187849-d8638714"));
+        hotels.add(new Accommodation("Hotel Artemide", "Rome", 4.0, "g187791-d205044"));
+        hotels.add(new Accommodation("Hotel Colosseum", "Rome", 3.0, "g187791-d230612"));
+        hotels.add(new Accommodation("Carnival Palace Hotel", "Venice", 4.0, "g187870-d2558563"));
+        hotels.add(new Accommodation("Grand Hotel Vesuvio", "Naples", 4.0, "g187782-d277289"));
+
+        // Germany
+        hotels.add(new Accommodation("Platzl Hotel", "Munich", 4.0, "g187309-d228386"));
+        hotels.add(new Accommodation("NYX Hotel", "Munich", 5.0, "g187309-d13341530"));
+        hotels.add(new Accommodation("Havellandhalle Resort", "Berlin", 4.0, "g187323-d3159001"));
+        hotels.add(new Accommodation("Hotel Am Borsigturm", "Berlin", 4.0, "g187323-d202454"));
+        hotels.add(new Accommodation("Steigenberger Icon Hof", "Frankfurt", 5.0, "g187337-d202275"));
+
+        // Portugal
+        hotels.add(new Accommodation("Corpo Santo Historical Hotel", "Lisbon", 5.0, "g189158-d12659702"));
+        hotels.add(new Accommodation("Epic Sana Lisboa Hotel", "Lisbon", 5.0, "g189158-d3874679"));
+        hotels.add(new Accommodation("Reid's Palace", "Madeira", 4.0, "g189167-d196072"));
+        hotels.add(new Accommodation("Moov Hotel Porto Centro", "Porto", 2.0, "g189180-d2522678"));
+        hotels.add(new Accommodation("Porto Mare", "Porto", 4.0, "g189167-d296287"));
+
+        // China
+        hotels.add(new Accommodation("Jw Marriot Hotel", "Beijing", 5.0, "g294212-d813649"));
+        hotels.add(new Accommodation("The Purple Horse Hotel", "Beijing", 4.0, "g294212-d606463"));
+        hotels.add(new Accommodation("Legendale Hotel", "Beijing", 5.0, "g294212-d1200091"));
+
+        // Canada
+        hotels.add(new Accommodation("SoHo Hotel", "Toronto", 5.0, "g155019-d259397"));
+        hotels.add(new Accommodation("Novotel Toronto Centre", "Toronto", 4.0, "g155019-d183075"));
+        hotels.add(new Accommodation("Life Suites Loft", "Toronto", 3.0, "g155019-d12034975"));
+
+        // Hungary
+        hotels.add(new Accommodation("Prestige Hotel", "Budapest", 4.0, "g274887-d7818402"));
+        hotels.add(new Accommodation("Three Corners Hotel Anna", "Budapest", 3.0, "g274887-d286521"));
+
+        // Czechia
+        hotels.add(new Accommodation("Kings Court Deluxe Hotel", "Prague", 5.0, "g274707-d1485015"));
+        hotels.add(new Accommodation("Occidental Praha", "Prague", 4.0, "g274707-d276697"));
+
+        // Netherlands
+        hotels.add(new Accommodation("Monet Garden Hotel", "Amsterdam", 4.0, "g188590-d12967879"));
+        hotels.add(new Accommodation("Volkshotel", "Amsterdam", 3.0, "g188590-d6599284"));
+        hotels.add(new Accommodation("Jaz in the City", "Amsterdam", 5.0, "g188590-d8095316"));
+
+        // Ireland
+        hotels.add(new Accommodation("Temple Bar Hotel", "Dublin", 4.0, "g186605-d214554"));
+        hotels.add(new Accommodation("Dublin One Hotel", "Dublin", 4.0, "g186605-d24050834"));
+        hotels.add(new Accommodation("Marlin Hotel Stephen's Green", "Dublin", 4.0, "g186605-d17512363"));
+
+        // Australia
+        hotels.add(new Accommodation("The Grace", "Sydney", 4.0, "g255060-d257296"));
+        hotels.add(new Accommodation("Sydney Harbour Hotel", "Sydney", 4.0, "g255060-d255392"));
+        hotels.add(new Accommodation("Rendezvous Hotel", "Sydney", 4.0, "g255060-d256655"));
+        hotels.add(new Accommodation("The Great Southern Hotel", "Perth", 4.0, "g255103-d8433703"));
     } 
         
     public List<Accommodation> searchAccommodations(AccommodationFilter filter) { 
