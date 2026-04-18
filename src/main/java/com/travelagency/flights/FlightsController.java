@@ -16,10 +16,9 @@ public class FlightsController {
         String retDate     = data.getOrDefault("returnDate", "2026-04-30");
 
         // API calls temporarily disabled to preserve free tier credits.
-        // To re-enable: remove the return below and uncomment the block beneath it.
-        return getBackupFlights(origin, destination, depDate, retDate);
+        //return getBackupFlights(origin, destination, depDate, retDate);
 
-        /*
+        
         String adults   = data.getOrDefault("adults", "1");
         String children = data.getOrDefault("children", "0");
         String infants  = data.getOrDefault("infants", "0");
@@ -62,7 +61,6 @@ public class FlightsController {
             }
         }
         return flights.isEmpty() ? getBackupFlights(origin, destination, depDate, retDate) : flights;
-        */
     }
 
     private List<Map<String, Object>> getBackupFlights(
