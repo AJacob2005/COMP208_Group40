@@ -29,7 +29,7 @@ public class AccommodationService {
         hotels.add(new Accommodation("The Cloud One Hotel", "New York", 3.0, "g60763-d24075420"));
         hotels.add(new Accommodation("Hotel Indigo Lower East Side", "New York", 4.0, "g60763-d7352347"));
         hotels.add(new Accommodation("Hotel Riu Plaza Manhatten Times Square", "New York", 4.0, "g60763-d23124360"));
-        hotels.add(new Accommodation("Even Hotel", "New York", 4.0, "g60763-d7778097-"));
+        hotels.add(new Accommodation("Even Hotel", "New York", 4.0, "g60763-d7778097"));
         hotels.add(new Accommodation("The Peninsula", "New York", 5.0, "g60763-d113311"));
         hotels.add(new Accommodation("The Ritz-Carlton, Central Park", "New York", 5.0, "g60763-d224224"));
         hotels.add(new Accommodation("The Plaza New York", "New York", 5.0, "g60763-d675616"));
@@ -45,7 +45,7 @@ public class AccommodationService {
         hotels.add(new Accommodation("Crestfield Hotel", "London", 2.0, "g186338-d263679"));
         hotels.add(new Accommodation("Hotel Motel One London-Tower Hill", "London", 3.0, "g186338-d7288418"));
         hotels.add(new Accommodation("Chesham Hotel Belgravia", "London", 3.0, "g186338-d193622"));
-        hotels.add(new Accommodation("The Monague on the Gardens", "London", 4.0, "g186338-d192036"));
+        hotels.add(new Accommodation("The Montague on the Gardens", "London", 4.0, "g186338-d192036"));
         hotels.add(new Accommodation("Lancaster Gate Hotel", "London", 4.0, "g186338-d195206"));
         hotels.add(new Accommodation("Strand Palace", "London", 4.0, "g186338-d193112"));
         hotels.add(new Accommodation("Hotel 41", "London", 5.0, "g186338-d188961"));
@@ -54,12 +54,12 @@ public class AccommodationService {
 
         // Tokyo
         hotels.add(new Accommodation("Chapter Two Tokyo", "Tokyo", 1.0, "g1066461-d13819464"));
-        hotels.add(new Accommodation("The Milennials Shibuya", "Tokyo", 2.0, "g1066456-d13398497"));
+        hotels.add(new Accommodation("The Millennials Shibuya", "Tokyo", 2.0, "g1066456-d13398497"));
         hotels.add(new Accommodation("Koko Hotel", "Tokyo", 3.0, "g1066444-d16736885"));
         hotels.add(new Accommodation("Hotel Sunroute Plaza Shinjuku", "Tokyo", 3.0, "g14133713-d320581"));
         hotels.add(new Accommodation("Miyashita Park", "Tokyo", 4.0, "g1066456-d19990197"));
         hotels.add(new Accommodation("Hotel Gracery Shinjuku", "Tokyo", 4.0, "g14133667-d6987624"));
-        hotels.add(new Accommodation(Keio Plaza Hotel"", "Tokyo", 4.0, "g14133673-d304305"));
+        hotels.add(new Accommodation("Keio Plaza Hotel", "Tokyo", 4.0, "g14133673-d304305"));
         hotels.add(new Accommodation("Intercontinental The Strings", "Tokyo", 5.0, "g1066451-d300471"));
         hotels.add(new Accommodation("Four Seasons Hotel", "Tokyo", 5.0, "g14129477-d20057286"));
         hotels.add(new Accommodation("Palace Hotel Tokyo", "Tokyo", 5.0, "g14129528-d2528953"));
@@ -95,7 +95,7 @@ public class AccommodationService {
         hotels.add(new Accommodation("Porto Mare", "Porto", 4.0, "g189167-d296287"));
 
         // China
-        hotels.add(new Accommodation("Jw Marriot Hotel", "Beijing", 5.0, "g294212-d813649"));
+        hotels.add(new Accommodation("Jw Marriott Hotel", "Beijing", 5.0, "g294212-d813649"));
         hotels.add(new Accommodation("The Purple Horse Hotel", "Beijing", 4.0, "g294212-d606463"));
         hotels.add(new Accommodation("Legendale Hotel", "Beijing", 5.0, "g294212-d1200091"));
 
