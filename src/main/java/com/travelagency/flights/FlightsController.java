@@ -16,10 +16,10 @@ public class FlightsController {
         String retDate     = data.getOrDefault("returnDate", "2026-04-30");
 
         // API calls temporarily disabled to preserve free tier credits.
-        //return getBackupFlights(origin, destination, depDate, retDate);
+        return getBackupFlights(origin, destination, depDate, retDate);
 
         
-        String adults   = data.getOrDefault("adults", "1");
+        /*String adults   = data.getOrDefault("adults", "1");
         String children = data.getOrDefault("children", "0");
         String infants  = data.getOrDefault("infants", "0");
         String cabin    = data.getOrDefault("cabin", "Economy").replace(" ", "_");
@@ -60,7 +60,7 @@ public class FlightsController {
                 flights.add(f);
             }
         }
-        return flights.isEmpty() ? getBackupFlights(origin, destination, depDate, retDate) : flights;
+        return flights.isEmpty() ? getBackupFlights(origin, destination, depDate, retDate) : flights;*/
     }
 
     private List<Map<String, Object>> getBackupFlights(
