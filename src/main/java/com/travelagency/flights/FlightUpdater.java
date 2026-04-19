@@ -4,7 +4,8 @@ import java.util.Map;
 
 public class FlightUpdater {
 
-    private static final String API_KEY = "69df93455e1a26f2fe76fedc";
+    //private static final String API_KEY = "69df93455e1a26f2fe76fedc"; expired :(
+    private static final String API_KEY = "69e4c9a948450767e5018c3c"; // not expired  (yet) :)
 
     public static boolean updateFlights(
         String departure, String arrival, String departDate, String returnDate,
