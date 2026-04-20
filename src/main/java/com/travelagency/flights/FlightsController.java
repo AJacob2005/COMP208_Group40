@@ -60,6 +60,7 @@ public class FlightsController {
                 flights.add(f);
             }
         }
+        // Reverts to backup data should the API key fail / expire
         return flights.isEmpty() ? getBackupFlights(origin, destination, depDate, retDate) : flights;
     }
 
